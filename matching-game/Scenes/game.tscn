@@ -17,4 +17,3 @@ position = Vector2(-16, 445)
 shape = SubResource("WorldBoundaryShape2D_uh04o")
 
 [node name="Grid" parent="." instance=ExtResource("1_oosgc")]
-position = Vector2(-50, -217)
