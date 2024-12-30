@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b8udctduwp5l7"
-path="res://.godot/imported/Robo boy.png-ebb7426cc6ec344c945c7c080324c682.ctex"
+uid="uid://vllv6dhvwhtl"
+path="res://.godot/imported/Long-SpikeFactory.png-4f5526423a49bf742e6014ef5f0e93b1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/Robo boy.png"
-dest_files=["res://.godot/imported/Robo boy.png-ebb7426cc6ec344c945c7c080324c682.ctex"]
+source_file="res://sprites/Long-SpikeFactory.png"
+dest_files=["res://.godot/imported/Long-SpikeFactory.png-4f5526423a49bf742e6014ef5f0e93b1.ctex"]
 
 [params]
 

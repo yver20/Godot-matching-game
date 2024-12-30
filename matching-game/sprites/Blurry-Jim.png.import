@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://coq1f6ql26wpw"
-path="res://.godot/imported/000-SpikeFactory.webp-0395e28a546047654399a5da412ba564.ctex"
+uid="uid://c31nixyay23iw"
+path="res://.godot/imported/Blurry-Jim.png-65099d3d48c78545d4d9f8321accfdde.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/000-SpikeFactory.webp"
-dest_files=["res://.godot/imported/000-SpikeFactory.webp-0395e28a546047654399a5da412ba564.ctex"]
+source_file="res://sprites/Blurry-Jim.png"
+dest_files=["res://.godot/imported/Blurry-Jim.png-65099d3d48c78545d4d9f8321accfdde.ctex"]
 
 [params]
 

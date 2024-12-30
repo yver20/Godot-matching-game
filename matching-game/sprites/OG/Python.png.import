@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bwamoxwqr6nyv"
-path="res://.godot/imported/Jim.PNG-2ed3393ab198221708b7db26d6b6cb78.ctex"
+uid="uid://b34i4q5lj6lom"
+path="res://.godot/imported/Python.png-4a9cb8c54788e1492d9a90b7aac90eec.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/Jim.PNG"
-dest_files=["res://.godot/imported/Jim.PNG-2ed3393ab198221708b7db26d6b6cb78.ctex"]
+source_file="res://sprites/OG/Python.png"
+dest_files=["res://.godot/imported/Python.png-4a9cb8c54788e1492d9a90b7aac90eec.ctex"]
 
 [params]
 

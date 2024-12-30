@@ -7,8 +7,8 @@
 [node name="Game" type="Node2D"]
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(2462, 1021)
-zoom = Vector2(0.2, 0.2)
+position = Vector2(3856, 4092)
+zoom = Vector2(0.06, 0.06)
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 position = Vector2(-16, 445)

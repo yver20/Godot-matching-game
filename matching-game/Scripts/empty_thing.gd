@@ -1,6 +1,6 @@
 extends Node2D
 
-var val = randi_range(0, 5)
+var val = randi_range(0, 6)
 
 func _ready() -> void:
 	print("I exist!")
