@@ -2,6 +2,8 @@ extends Node2D
 
 var val = randi_range(0, 6)
 
+var clicked = false
+
 const BIG_LOADING = preload("res://sprites/Big-Loading.png")
 const BLURRY_JIM = preload("res://sprites/Blurry-Jim.png")
 const GREEN_PYTHON = preload("res://sprites/Green-Python.png")
@@ -31,8 +33,10 @@ func _input(event):
 		var mousePos = get_global_mouse_position()
 		if ((mousePos.x <= (global_position.x + 450)) && (mousePos.x >= (global_position.x - 450)) && (mousePos.y <= (global_position.y + 450)) && (mousePos.y >= (global_position.y - 450)) ):
 			print("click here! My position is: ", global_position, ", and the click was at: ", mousePos)
+			clicked = !clicked
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	pass
+	if clicked:
+		global_position = get_global_mouse_position()
