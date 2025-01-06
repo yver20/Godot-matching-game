@@ -27,16 +27,17 @@ func _ready() -> void:
 		6: $Image.texture = BLUE_BSM_2F_SQUID_BOSS
 		
 
-
-func _input(event):
-	if event.is_action_pressed("grab"):
-		var mousePos = get_global_mouse_position()
-		if ((mousePos.x <= (global_position.x + 450)) && (mousePos.x >= (global_position.x - 450)) && (mousePos.y <= (global_position.y + 450)) && (mousePos.y >= (global_position.y - 450)) ):
-			print("click here! My position is: ", global_position, ", and the click was at: ", mousePos)
-			clicked = !clicked
-
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	if Input.is_action_just_pressed("grab"):
+		var mousePos = get_global_mouse_position()
+		if ((mousePos.x <= (global_position.x + 450)) && (mousePos.x >= (global_position.x - 450)) && (mousePos.y <= (global_position.y + 450)) && (mousePos.y >= (global_position.y - 450)) ):
+			#print("click here! My position is: ", global_position, ", and the click was at: ", mousePos)
+			clicked = true
+			
+	if Input.is_action_just_released("grab"):
+		global_position = Vector2((int(global_position.x+450) - (int(global_position.x)%900)),(int(global_position.y+450) - (int(global_position.y)%900)))
+		clicked = false
+		
 	if clicked:
 		global_position = get_global_mouse_position()

@@ -3,7 +3,8 @@ extends StaticBody2D
 const gridSizeX = 7
 const gridSizeY = 7
 
-@onready var empty_thing: Node2D = $"Empty Thing"
+@onready var piece: Node2D = $Piece
+@onready var empty: Node2D = $Node2D
 
 
 
@@ -11,8 +12,15 @@ const gridSizeY = 7
 func _ready() -> void:
 	for n in gridSizeX:
 		for i in gridSizeY:
-			print("duplicating...")
-			var gridPiece = empty_thing.duplicate()
+			var gridNode = empty.duplicate()
+			add_child(gridNode)
+			gridNode.global_position.y = n * 900
+			gridNode.global_position.x = i * 900
+
+	for n in gridSizeX:
+		for i in gridSizeY:
+			#print("duplicating...")
+			var gridPiece = piece.duplicate()
 			add_child(gridPiece)
 			gridPiece.global_position.y = n * 900
 			gridPiece.global_position.x = i * 900
