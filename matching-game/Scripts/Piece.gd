@@ -36,7 +36,7 @@ func _process(delta: float) -> void:
 			clicked = true
 			
 	if Input.is_action_just_released("grab"):
-		global_position = Vector2((int(global_position.x+450) - (int(global_position.x)%900)),(int(global_position.y+450) - (int(global_position.y)%900)))
+		global_position = Vector2((int(global_position.x) - (int(global_position.x)%900))+450,(int(global_position.y) - (int(global_position.y)%900))+450)
 		clicked = false
 		
 	if clicked:
