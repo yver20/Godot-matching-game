@@ -10,8 +10,8 @@ const gridSizeY = 7
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	for n in gridSizeX:
-		for i in gridSizeY:
+	for n in gridSizeX+1:
+		for i in gridSizeY+1:
 			var gridNode = empty.duplicate()
 			add_child(gridNode)
 			gridNode.global_position.y = (n * 900)
@@ -22,8 +22,8 @@ func _ready() -> void:
 			#print("duplicating...")
 			var gridPiece = piece.duplicate()
 			add_child(gridPiece)
-			gridPiece.global_position.y = (n * 900)
-			gridPiece.global_position.x = (i * 900)
+			gridPiece.global_position.y = (n * 900)+450
+			gridPiece.global_position.x = (i * 900)+450
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

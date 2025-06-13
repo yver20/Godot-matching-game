@@ -3,6 +3,7 @@ extends Node2D
 var val = randi_range(0, 6)
 
 var clicked = false
+var savedPosition
 
 const BIG_LOADING = preload("res://sprites/Big-Loading.png")
 const BLURRY_JIM = preload("res://sprites/Blurry-Jim.png")
@@ -14,6 +15,7 @@ const BLUE_BSM_2F_SQUID_BOSS = preload("res://sprites/Blue-BSM2F_Squid_Boss.png"
 
 func _ready() -> void:
 	print("I exist!")
+	savedPosition = global_position
 	#print("children:")
 	#print(get_child(0).name)
 	print(val)
@@ -33,10 +35,17 @@ func _process(delta: float) -> void:
 		var mousePos = get_global_mouse_position()
 		if ((mousePos.x <= (global_position.x + 450)) && (mousePos.x >= (global_position.x - 450)) && (mousePos.y <= (global_position.y + 450)) && (mousePos.y >= (global_position.y - 450)) ):
 			#print("click here! My position is: ", global_position, ", and the click was at: ", mousePos)
+			savedPosition = global_position
 			clicked = true
 			
 	if Input.is_action_just_released("grab"):
-		global_position = Vector2((int(global_position.x) - (int(global_position.x)%900))+450,(int(global_position.y) - (int(global_position.y)%900))+450)
+		if ((global_position.x <= 0)||(global_position.y <= 0)):
+			global_position = savedPosition
+		else:
+			if ((global_position.x >= 900*7)||(global_position.y >= 900*7)): #this needs input from the max grid size to check the proper distance
+				global_position = savedPosition
+			else:
+				global_position = Vector2((int(global_position.x) - (int(global_position.x)%900))+450,(int(global_position.y) - (int(global_position.y)%900))+450)
 		clicked = false
 		
 	if clicked:
