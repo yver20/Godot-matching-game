@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://bbhrvrluugod5"]
+
+[ext_resource type="Script" path="res://Scripts/gridCollider.gd" id="1_w30he"]
+[ext_resource type="Texture2D" uid="uid://sggi84bdki0h" path="res://sprites/Empty square.png" id="2_rowuk"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0jgro"]
+
+[node name="GridCollider" type="Area2D"]
+script = ExtResource("1_w30he")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(10, 10)
+shape = SubResource("RectangleShape2D_0jgro")
+debug_color = Color(0.224163, 0.307149, 1, 0.788235)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_rowuk")

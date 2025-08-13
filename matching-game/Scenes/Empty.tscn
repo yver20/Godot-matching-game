@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://u7126xxf8hiq"]
+[gd_scene load_steps=2 format=3 uid="uid://b1qqyc2gtuety"]
 
-[ext_resource type="Texture2D" uid="uid://cvkcnhcqpwd08" path="res://sprites/cross.png" id="1_x2oif"]
+[ext_resource type="Texture2D" uid="uid://sggi84bdki0h" path="res://sprites/Empty square.png" id="1_mqisa"]
 
 [node name="Node2D" type="Node2D"]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_x2oif")
+texture = ExtResource("1_mqisa")

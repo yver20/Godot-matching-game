@@ -1,8 +1,15 @@
-[gd_scene load_steps=2 format=3 uid="uid://3pfew0jnbt5g"]
+[gd_scene load_steps=3 format=3 uid="uid://3pfew0jnbt5g"]
 
 [ext_resource type="Script" path="res://Scripts/Piece.gd" id="1_qrhxk"]
 
-[node name="Piece" type="Node2D"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ihhpl"]
+
+[node name="Piece" type="Area2D"]
 script = ExtResource("1_qrhxk")
 
 [node name="Image" type="Sprite2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(20, 20)
+shape = SubResource("RectangleShape2D_ihhpl")
+debug_color = Color(0.992758, 0, 0.247511, 0.42)
