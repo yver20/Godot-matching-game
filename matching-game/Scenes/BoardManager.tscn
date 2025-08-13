@@ -1,0 +1,3 @@
+[gd_scene format=3 uid="uid://ccs32w80jqhd2"]
+
+[node name="BoardManager" type="Node2D"]
