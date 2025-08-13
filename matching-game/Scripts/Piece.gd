@@ -1,10 +1,10 @@
 extends Area2D
 
-var val = randi_range(0, 6)
+var pieceType: int
 
 var clicked = false
-var savedPosition:Vector2 #This is where a new position for the currently held piece is stored, and it's applied when the user lets go.
-var oldPosition:Vector2 #This is the original position of the piece before moving it. Usefull to have as a default, and for swapping other pieces to it.
+var savedPosition: Vector2 #This is where a new position for the currently held piece is stored, and it's applied when the user lets go.
+var oldPosition: Vector2 #This is the original position of the piece before moving it. Usefull to have as a default, and for swapping other pieces to it.
 
 const BIG_LOADING = preload("res://sprites/Big-Loading.png")
 const BLURRY_JIM = preload("res://sprites/Blurry-Jim.png")
@@ -20,7 +20,8 @@ func _ready() -> void:
 	#print("children:")
 	#print(get_child(0).name)
 	#print(val)
-	match val:
+	pieceType = randi_range(0,6)
+	match pieceType:
 		0: $Image.texture = BIG_LOADING
 		1: $Image.texture = BLURRY_JIM
 		2: $Image.texture = GREEN_PYTHON
