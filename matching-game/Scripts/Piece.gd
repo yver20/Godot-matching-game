@@ -2,6 +2,10 @@ extends Area2D
 
 var pieceType: int
 
+var gridPos: Vector2
+#this is the X and Y positons 'on the grid' rather than its physical position in the world
+#This should be useful for debugging and double checking where matches are made
+
 var clicked = false
 var savedPosition: Vector2 #This is where a new position for the currently held piece is stored, and it's applied when the user lets go.
 var oldPosition: Vector2 #This is the original position of the piece before moving it. Usefull to have as a default, and for swapping other pieces to it.
@@ -51,17 +55,22 @@ func _process(delta: float) -> void:
 			global_position = savedPosition
 	if clicked:
 		global_position = get_global_mouse_position()
+		print("I'm clicked! saved position is: " + str(savedPosition))
 		
 
 func _on_area_entered(area: Area2D) -> void:
-	if area.is_in_group("grid"):
-		savedPosition = area.global_position
-	if area.is_in_group("pieces"):
-		area.savedPosition = oldPosition
+	if clicked:
+		if area.is_in_group("tileColliders"):
+			print("area is in group 'tileColliders'!")
+			savedPosition = area.global_position
+		if area.is_in_group("pieces"):
+			area.savedPosition = oldPosition
 		
 
 func _on_area_exited(area: Area2D) -> void:
-	if area.is_in_group("grid"):
-		savedPosition = oldPosition
-	if area.is_in_group("pieces"):
-		area.savedPosition = area.oldPosition
+	if clicked:
+		if area.is_in_group("tileColliders"):
+			print("area is in group 'tileColliders'!")
+			savedPosition = oldPosition
+		if area.is_in_group("pieces"):
+			area.savedPosition = area.oldPosition

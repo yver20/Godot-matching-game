@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://ccs32w80jqhd2"]
 
-[ext_resource type="Script" path="res://Scripts/board_manager.gd" id="1_opy2t"]
+[ext_resource type="Script" path="res://Scripts/boardManager.gd" id="1_opy2t"]
 [ext_resource type="PackedScene" uid="uid://cilfgwey1qpxb" path="res://Scenes/Managers/GridManager.tscn" id="2_owknp"]
 [ext_resource type="PackedScene" uid="uid://px1btomdkxj1" path="res://Scenes/Managers/PieceManager.tscn" id="3_eo7lr"]
 
