@@ -1,7 +1,7 @@
 extends Area2D
 
-const gridSizeX = 7
-const gridSizeY = 7
+var gridSizeX: int
+var gridSizeY: int
 const spacing = 900
 
 @onready var piece: Node2D = $Piece
@@ -28,7 +28,6 @@ func _ready() -> void:
 			gridPiece.global_position = Vector2(x*spacing, y*spacing)
 			gridPiece.connect("area_entered", Callable(gridPiece, "_on_area_entered"))
 			gridPiece.connect("area_exited", Callable(gridPiece, "_on_area_exited"))
-			
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

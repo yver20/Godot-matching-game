@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://px1btomdkxj1"]
+
+[ext_resource type="Script" path="res://Scripts/piece_manager.gd" id="1_ih0tm"]
+[ext_resource type="PackedScene" uid="uid://3pfew0jnbt5g" path="res://Scenes/Parts/Piece.tscn" id="2_etd1c"]
+
+[node name="PieceManager" type="Node2D"]
+script = ExtResource("1_ih0tm")
+
+[node name="Piece" parent="." instance=ExtResource("2_etd1c")]

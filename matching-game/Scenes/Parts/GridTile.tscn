@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://b0gaepmplvql7"]
+
+[ext_resource type="PackedScene" uid="uid://bbhrvrluugod5" path="res://Scenes/Parts/GridCollider.tscn" id="1_1bh0p"]
+
+[node name="GridTile" type="Node2D"]
+
+[node name="GridCollider" parent="." instance=ExtResource("1_1bh0p")]

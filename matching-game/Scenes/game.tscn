@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://c46jq8dalq5o1"]
 
-[ext_resource type="PackedScene" uid="uid://cilfgwey1qpxb" path="res://Scenes/grid.tscn" id="1_oosgc"]
+[ext_resource type="PackedScene" uid="uid://ccs32w80jqhd2" path="res://Scenes/Managers/BoardManager.tscn" id="1_bbm7y"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_uh04o"]
 
@@ -16,4 +16,4 @@ position = Vector2(-16, 445)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
 shape = SubResource("WorldBoundaryShape2D_uh04o")
 
-[node name="Grid" parent="." instance=ExtResource("1_oosgc")]
+[node name="BoardManager" parent="." instance=ExtResource("1_bbm7y")]
