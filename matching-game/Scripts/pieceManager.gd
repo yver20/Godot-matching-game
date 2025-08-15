@@ -101,36 +101,22 @@ func _check_for_matches() -> void:
 	#horizontal check:
 	while currentRow < boardHeight:
 		for x in pieces.size():
-			currentMatch.append(pieces[x][currentRow])
 			if previousPiece != null:
 				if pieces[x][currentRow].pieceType == previousPiece.pieceType: #if the type of the previous piece is the same as the piece currently being checked, we can begin matching shenanigans.
 					matchCount += 1 #two pieces have lined up at least.
-				
-				else: #the chain is broken and we can finalize the currently found match
-					#first we need to remove the current piece, because it's not part of the chain as it's different from the previous piece
-					currentMatch.erase(pieces[x][currentRow])
+				else: #the chain is broken because the previous piece was different
 					if matchCount >= minimumMatchSize: #If the line of pieces is 3 or more (by default, see minimumMatchSize) a valid match is created, and all of the found pieces need to be noted
-						
-						for p in currentMatch.size(): #now that the chain is done, we simply add each of the noted pieces in the currentMatch to the main matchedPieces Array.
-							matchedPieces.append(currentMatch[p])
-							
-					else: #the chain only had 2 or fewer pieces. not a match. we clear the currentMatch array and add the current piece back in which is the beginning of a possible new chain.
-						currentMatch.clear()
-						currentMatch.append(pieces[x][currentRow])
-					matchCount = 1 #reset count to 1, with the current piece being 'number one' in the chain.
-				
-			else: #the chain is broken and we can finalize the currently found match
-				#first we need to remove the current piece, because it's not part of the chain as it's different from the previous piece
-				currentMatch.erase(pieces[x][currentRow])
-				if matchCount >= minimumMatchSize: #If the line of pieces is 3 or more (by default, see minimumMatchSize) a valid match is created, and all of the found pieces need to be noted
-					
-					for p in currentMatch.size(): #now that the chain is done, we simply add each of the noted pieces in the currentMatch to the main matchedPieces Array.
-						matchedPieces.append(currentMatch[p])
-						
-				else: #the chain only had 2 or fewer pieces. not a match. we clear the currentMatch array and add the current piece back in which is the beginning of a possible new chain.
+						#now that the chain is done, we simply add each of the noted pieces in the currentMatch to the main matchedPieces Array.
+						matchedPieces.append_array(currentMatch)
 					currentMatch.clear()
-					currentMatch.append(pieces[x][currentRow])
+					matchCount = 1 #reset count to 1, with the current piece becoming 'number one' in the chain.
+			else: #the chain is broken because there was no previous piece
+				if matchCount >= minimumMatchSize: #If the line of pieces is 3 or more (by default, see minimumMatchSize) a valid match is created, and all of the found pieces need to be noted
+					#now that the chain is done, we simply add each of the noted pieces in the currentMatch to the main matchedPieces Array.
+					matchedPieces.append_array(currentMatch)
+				currentMatch.clear()
 				matchCount = 1 #reset count to 1, with the current piece being 'number one' in the chain.
+			currentMatch.append(pieces[x][currentRow])
 			previousPiece = pieces[x][currentRow] #current piece becomes the new 'previous piece' before the next piece is checked
 		#here, the current row has been completely checked. we don't want a chain to continue over to the next row, so we need to clear the previousPiece. This will make sure the next row of checks begin with 'null' which will never match.
 		#technically we don't need to also clear the currentMatch, as it will be reset anyway because 'the chain will be broken' at the start of the next row
@@ -143,11 +129,50 @@ func _check_for_matches() -> void:
 	#however, we do need to compare added pieces to the already added pieces of the array, so that we don't accidentally add the same piece twice.
 	#In that scenario, two matches have crossed, and either a T, L or cross match has been created. We'll do special stuff for that later. for now, we'll just not add them to the main list of matched pieces.
 	
-	#For testing purposes, we'll finalize the matching here first, and add the vertical check later.
+	for x in pieces.size():
+		for y in pieces[x].size():
+			if previousPiece != null:
+				if pieces[x][y].pieceType == previousPiece.pieceType: #if the type of the previous piece is the same as the piece currently being checked, we can begin matching shenanigans.
+					matchCount += 1 #two pieces have lined up at least.
+				else: #the chain is broken because the previous piece was different
+					if matchCount >= minimumMatchSize: #If the line of pieces is 3 or more (by default, see minimumMatchSize) a valid match is created, and all of the found pieces need to be noted
+						#now that the chain is done, we simply add each of the noted pieces in the currentMatch to the main matchedPieces Array.
+						for p in currentMatch.size():
+							if !matchedPieces.has(currentMatch[p]):
+								matchedPieces.append(currentMatch[p])
+					currentMatch.clear()
+					matchCount = 1 #reset count to 1, with the current piece becoming 'number one' in the chain.
+			else: #the chain is broken because there was no previous piece
+				if matchCount >= minimumMatchSize: #If the line of pieces is 3 or more (by default, see minimumMatchSize) a valid match is created, and all of the found pieces need to be noted
+					#now that the chain is done, we simply add each of the noted pieces in the currentMatch to the main matchedPieces Array.
+					for p in currentMatch.size():
+							if !matchedPieces.has(currentMatch[p]):
+								matchedPieces.append(currentMatch[p])
+				currentMatch.clear()
+				matchCount = 1 #reset count to 1, with the current piece being 'number one' in the chain.
+			currentMatch.append(pieces[x][y])
+			previousPiece = pieces[x][y] #current piece becomes the new 'previous piece' before the next piece is checked
+		#here, the current row has been completely checked. we don't want a chain to continue over to the next row, so we need to clear the previousPiece. This will make sure the next row of checks begin with 'null' which will never match.
+		#technically we don't need to also clear the currentMatch, as it will be reset anyway because 'the chain will be broken' at the start of the next row
+		previousPiece = null
 	
 	for x in matchedPieces.size():
 		matchedPieces[x].queue_free()
 		matchedPieces[x] = null
+
+#this function was an attempt to have all of this logic in one function. however, it didn't really work out, and it's currently working anyway.
+#func _finalize_match(currentMatch: Array, matchedPieces: Array, currentPiece: Area2D, matchCount: int) -> Array: #the chain was broken, so now we check if a valid match was made
+	##first we need to remove the current piece, because it's not part of the chain as it's different from the previous piece
+	#currentMatch.erase(currentPiece)
+	#if matchCount >= minimumMatchSize: #If the line of pieces is 3 or more (by default, see minimumMatchSize) a valid match is created, and all of the found pieces need to be noted
+		#
+		##we simply add each of the noted pieces in the currentMatch to the main matchedPieces Array.
+		#matchedPieces.append_array(currentMatch)
+		#
+	#else: #the chain only had 2 or fewer pieces. not a match. we clear the currentMatch array and add the current piece back in which is the beginning of a possible new chain.
+		#currentMatch.clear()
+		#currentMatch.append(currentPiece)
+	#matchCount = 1 #reset count to 1, with the current piece being 'number one' in the chain.
 
 func _on_piece_area_entered(other: Area2D, piece: Area2D) -> void:
 	if currentlyDraggedPiece == piece:
