@@ -24,28 +24,31 @@ func _generate_pieces() -> void:
 	for x in gridSizeX:
 		pieces[x] = []
 		for y in gridSizeY:
-			var currentPiece = pieceScene.duplicate()
-			add_child(currentPiece)
-			currentPiece.pieceType = randi_range(0,6)
-			currentPiece.add_to_group("pieces")
-			currentPiece.global_position = Vector2(x*spacing, y*spacing)
-			currentPiece.gridPos =  Vector2(x,y)
-			currentPiece._initialize_piece()
-			
-			# Input
-			currentPiece.connect("input_event", Callable(self, "_on_piece_input_event").bind(currentPiece))
-			# Collision forwarding
-			currentPiece.connect("area_entered", Callable(self, "_on_piece_area_entered").bind(currentPiece))
-			currentPiece.connect("area_exited", Callable(self, "_on_piece_area_exited").bind(currentPiece))
-			#current piece needs to be bound instead?
-			
-			pieces[x].append(currentPiece)
+			pieces[x].append(null)
+			_generate_new_piece(x, y)
 #The above logic divides the grid in columns. Every array in the 'pieces' array is one column.
+
+func _generate_new_piece(x: int, y: int) -> void:
+	var currentPiece = pieceScene.duplicate()
+	add_child(currentPiece)
+	currentPiece.pieceType = randi_range(0,6)
+	currentPiece.add_to_group("pieces")
+	currentPiece.global_position = Vector2(x*spacing, y*spacing)
+	currentPiece.gridPos =  Vector2(x,y)
+	currentPiece._initialize_piece()
+	
+	# Input
+	currentPiece.connect("input_event", Callable(self, "_on_piece_input_event").bind(currentPiece))
+	# Collision forwarding
+	currentPiece.connect("area_entered", Callable(self, "_on_piece_area_entered").bind(currentPiece))
+	currentPiece.connect("area_exited", Callable(self, "_on_piece_area_exited").bind(currentPiece))
+	#current piece needs to be bound instead?
+	
+	pieces[x][y] = currentPiece
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("debug"):
 		print("debug power go!")
-		_check_for_matches()
 
 func _on_piece_input_event(viewport: Node, event: InputEvent, shape_idx: int, piece: Area2D) -> void:
 	#picking up a piece
@@ -68,6 +71,7 @@ func _on_piece_input_event(viewport: Node, event: InputEvent, shape_idx: int, pi
 		_print_board_state() #this can be uncommented to check if moving is stored correctly.
 		
 		currentlyDraggedPiece = null
+		_apply_gravity_to_pieces()
 
 
 func _on_piece_area_entered(other: Area2D, piece: Area2D) -> void:
@@ -88,6 +92,7 @@ func _on_piece_area_exited(other: Area2D, piece: Area2D) -> void:
 			other.savedPosition = other.oldPosition
 			swappingPiece = null
 
+#This complex function goes through the current 2D array of pieces and identifies all lines of same-type pieces and removes them.
 func _check_for_matches() -> void:
 
 	var matchedPieces = []
@@ -159,25 +164,23 @@ func _check_for_matches() -> void:
 		#technically we don't need to also clear the currentMatch, as it will be reset anyway because 'the chain will be broken' at the start of the next row
 		previousPiece = null
 	
+	#At this point, the loop has ended, but if there was a match, we never got to finish it. final check to see if there is a match at the corner
+	if matchCount >= minimumMatchSize: #If the line of pieces is 3 or more (by default, see minimumMatchSize) a valid match is created, and all of the found pieces need to be noted
+		#now that the chain is done, we simply add each of the noted pieces in the currentMatch to the main matchedPieces Array.
+		for p in currentMatch.size():
+				if !matchedPieces.has(currentMatch[p]):
+					matchedPieces.append(currentMatch[p])
+	
 	#finally, remove all matching pieces:
-	for x in matchedPieces.size():
-		pieces[matchedPieces[x].gridPos.x][matchedPieces[x].gridPos.y] = null
-		matchedPieces[x].queue_free()
-		matchedPieces[x] = null
-
-#this function was an attempt to have all of this logic in one function. however, it didn't really work out, and it's currently working anyway.
-#func _finalize_match(currentMatch: Array, matchedPieces: Array, currentPiece: Area2D, matchCount: int) -> Array: #the chain was broken, so now we check if a valid match was made
-	##first we need to remove the current piece, because it's not part of the chain as it's different from the previous piece
-	#currentMatch.erase(currentPiece)
-	#if matchCount >= minimumMatchSize: #If the line of pieces is 3 or more (by default, see minimumMatchSize) a valid match is created, and all of the found pieces need to be noted
-		#
-		##we simply add each of the noted pieces in the currentMatch to the main matchedPieces Array.
-		#matchedPieces.append_array(currentMatch)
-		#
-	#else: #the chain only had 2 or fewer pieces. not a match. we clear the currentMatch array and add the current piece back in which is the beginning of a possible new chain.
-		#currentMatch.clear()
-		#currentMatch.append(currentPiece)
-	#matchCount = 1 #reset count to 1, with the current piece being 'number one' in the chain.
+	if !matchedPieces.is_empty():
+		for x in matchedPieces.size():
+			pieces[matchedPieces[x].gridPos.x][matchedPieces[x].gridPos.y] = null
+			matchedPieces[x].queue_free()
+			matchedPieces[x] = null
+		matchedPieces.clear()
+		await get_tree().create_timer(0.5).timeout
+		_apply_gravity_to_pieces()
+	
 
 #this updates a piece's information regarding it's position on the grid.
 #not only is the pieces 2D array updated, but also the variable of the piece keeping track of it's own position.
@@ -197,6 +200,7 @@ func _update_piece_position(piece: Area2D) -> void:
 	piece.gridPos = Vector2(new_x, new_y)
 	pieces[new_x][new_y] = piece
 
+#This prints the current board state by printing the types of each row of pieces.
 func _print_board_state() -> void:
 	var pieceTypes = []
 	var boardHeight = pieces[0].size()
@@ -213,8 +217,31 @@ func _print_board_state() -> void:
 		continue
 	print("")
 
+#Once finished, this will make all pieces with empty slots directly under them drop one spot.
 func _apply_gravity_to_pieces() -> void:
-	pass
+	for x in pieces.size():
+		_apply_gravity_to_column(pieces[x])
+	await get_tree().create_timer(0.5).timeout
+	_refill_board()
+	_check_for_matches()
+	
+
+func _apply_gravity_to_column(column: Array) -> void:
+	for y in range(column.size() - 2, -1, -1):
+		var newY = y
+		if column[y] != null:
+			while newY + 1 < column.size() and column[newY + 1] == null:
+				newY += 1
+			if newY != y:
+				column[y].global_position = Vector2(column[y].global_position.x, newY*spacing)
+				_update_piece_position(column[y])
+				await get_tree().create_timer(0.1).timeout
+
+func _refill_board() -> void:
+	for x in pieces.size():
+		for y in pieces[x].size():
+			if pieces[x][y] == null:
+				_generate_new_piece(x,y)
 
 func _process(delta: float) -> void:
 	if currentlyDraggedPiece:
