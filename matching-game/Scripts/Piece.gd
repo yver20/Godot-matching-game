@@ -31,8 +31,6 @@ func _initialize_piece() -> void:
 		4: $Image.texture = STRETCHED_AWESOME_FACE
 		5: $Image.texture = TALL_ROBO_BOY
 		6: $Image.texture = BLUE_BSM_2F_SQUID_BOSS
-		
-
 
 # Forward collision signals to the manager
 func _on_area_entered(area: Area2D) -> void:

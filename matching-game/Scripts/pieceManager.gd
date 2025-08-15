@@ -13,7 +13,7 @@ var swappingPiece: Area2D
 func _ready() -> void:
 	print("Piece manager exists")
 
-
+#This function should be run at the beginning of the game, generating a new board of pieces.
 func _generate_pieces() -> void:
 	
 	print("Generating pieces...")
@@ -56,7 +56,7 @@ func _on_piece_input_event(viewport: Node, event: InputEvent, shape_idx: int, pi
 		currentlyDraggedPiece = null
 		if swappingPiece:
 			swappingPiece.global_position = swappingPiece.savedPosition
-			swappingPiece.oldPosition = global_position
+			swappingPiece.oldPosition = swappingPiece.global_position
 
 func _on_piece_area_entered(other: Area2D, piece: Area2D) -> void:
 	if currentlyDraggedPiece == piece:
@@ -64,7 +64,7 @@ func _on_piece_area_entered(other: Area2D, piece: Area2D) -> void:
 			piece.savedPosition = other.global_position
 		elif other.is_in_group("pieces"):
 			# Swap positions
-			piece.savedPosition = other.oldPosition
+			piece.savedPosition = other.global_position
 			other.savedPosition = piece.oldPosition
 			swappingPiece = other
 
