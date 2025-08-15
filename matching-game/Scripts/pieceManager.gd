@@ -63,23 +63,30 @@ func _on_piece_input_event(viewport: Node, event: InputEvent, shape_idx: int, pi
 		if swappingPiece:
 			swappingPiece.global_position = swappingPiece.savedPosition
 			swappingPiece.oldPosition = swappingPiece.global_position
-			_update_piece_position(currentlyDraggedPiece)
 			_update_piece_position(swappingPiece)
-			#_print_board_state() #this can be uncommented to check if moving is stored correctly.
+		_update_piece_position(currentlyDraggedPiece)
+		_print_board_state() #this can be uncommented to check if moving is stored correctly.
+		
 		currentlyDraggedPiece = null
 
-func _print_board_state() -> void:
-	var pieceTypes = []
-	var boardHeight = pieces[0].size()
-	var currentRow = 0
-	while currentRow < boardHeight:
-		for x in pieces.size():
-			pieceTypes.append(pieces[x][currentRow].pieceType)
-		print(pieceTypes)
-		pieceTypes.clear()
-		currentRow += 1
-		continue
-	print("")
+
+func _on_piece_area_entered(other: Area2D, piece: Area2D) -> void:
+	if currentlyDraggedPiece == piece:
+		if other.is_in_group("tileColliders"):
+			piece.savedPosition = other.global_position
+		elif other.is_in_group("pieces"):
+			# Swap positions
+			piece.savedPosition = other.global_position
+			other.savedPosition = piece.oldPosition
+			swappingPiece = other
+
+func _on_piece_area_exited(other: Area2D, piece: Area2D) -> void:
+	if currentlyDraggedPiece == piece:
+		if other.is_in_group("tileColliders"):
+			piece.savedPosition = piece.oldPosition
+		elif other.is_in_group("pieces"):
+			other.savedPosition = other.oldPosition
+			swappingPiece = null
 
 func _check_for_matches() -> void:
 
@@ -101,7 +108,7 @@ func _check_for_matches() -> void:
 	#horizontal check:
 	while currentRow < boardHeight:
 		for x in pieces.size():
-			if previousPiece != null:
+			if previousPiece != null and pieces[x][currentRow] != null:
 				if pieces[x][currentRow].pieceType == previousPiece.pieceType: #if the type of the previous piece is the same as the piece currently being checked, we can begin matching shenanigans.
 					matchCount += 1 #two pieces have lined up at least.
 				else: #the chain is broken because the previous piece was different
@@ -124,14 +131,10 @@ func _check_for_matches() -> void:
 		previousPiece = null
 		continue
 	
-	#here, all horizontal matches have been checked, and each of the pieces in those matches have been added to the matchedPieces Array
-	#Now, we need to check all vertical matches in the same way. This is a little less complex, as the pieces are stored per column by default, so we don't need to do the wierd reverse array checking we do in the horizontal check.
-	#however, we do need to compare added pieces to the already added pieces of the array, so that we don't accidentally add the same piece twice.
-	#In that scenario, two matches have crossed, and either a T, L or cross match has been created. We'll do special stuff for that later. for now, we'll just not add them to the main list of matched pieces.
-	
+	#vertical check:
 	for x in pieces.size():
 		for y in pieces[x].size():
-			if previousPiece != null:
+			if previousPiece != null and pieces[x][y] != null:
 				if pieces[x][y].pieceType == previousPiece.pieceType: #if the type of the previous piece is the same as the piece currently being checked, we can begin matching shenanigans.
 					matchCount += 1 #two pieces have lined up at least.
 				else: #the chain is broken because the previous piece was different
@@ -156,7 +159,9 @@ func _check_for_matches() -> void:
 		#technically we don't need to also clear the currentMatch, as it will be reset anyway because 'the chain will be broken' at the start of the next row
 		previousPiece = null
 	
+	#finally, remove all matching pieces:
 	for x in matchedPieces.size():
+		pieces[matchedPieces[x].gridPos.x][matchedPieces[x].gridPos.y] = null
 		matchedPieces[x].queue_free()
 		matchedPieces[x] = null
 
@@ -173,24 +178,6 @@ func _check_for_matches() -> void:
 		#currentMatch.clear()
 		#currentMatch.append(currentPiece)
 	#matchCount = 1 #reset count to 1, with the current piece being 'number one' in the chain.
-
-func _on_piece_area_entered(other: Area2D, piece: Area2D) -> void:
-	if currentlyDraggedPiece == piece:
-		if other.is_in_group("tileColliders"):
-			piece.savedPosition = other.global_position
-		elif other.is_in_group("pieces"):
-			# Swap positions
-			piece.savedPosition = other.global_position
-			other.savedPosition = piece.oldPosition
-			swappingPiece = other
-
-func _on_piece_area_exited(other: Area2D, piece: Area2D) -> void:
-	if currentlyDraggedPiece == piece:
-		if other.is_in_group("tileColliders"):
-			piece.savedPosition = piece.oldPosition
-		elif other.is_in_group("pieces"):
-			other.savedPosition = other.oldPosition
-			swappingPiece = null
 
 #this updates a piece's information regarding it's position on the grid.
 #not only is the pieces 2D array updated, but also the variable of the piece keeping track of it's own position.
@@ -209,6 +196,25 @@ func _update_piece_position(piece: Area2D) -> void:
 	# Update logical position
 	piece.gridPos = Vector2(new_x, new_y)
 	pieces[new_x][new_y] = piece
+
+func _print_board_state() -> void:
+	var pieceTypes = []
+	var boardHeight = pieces[0].size()
+	var currentRow = 0
+	while currentRow < boardHeight:
+		for x in pieces.size():
+			if pieces[x][currentRow] != null:
+				pieceTypes.append(pieces[x][currentRow].pieceType)
+			else:
+				pieceTypes.append("n")
+		print(pieceTypes)
+		pieceTypes.clear()
+		currentRow += 1
+		continue
+	print("")
+
+func _apply_gravity_to_pieces() -> void:
+	pass
 
 func _process(delta: float) -> void:
 	if currentlyDraggedPiece:
