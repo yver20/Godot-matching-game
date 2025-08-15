@@ -2,8 +2,8 @@ extends Node2D
 
 #This is where stuff like boardsize is given to the other managers, and where information regarding matching is transferred between them.
 
-var gridSizeX: int = 8
-var gridSizeY: int = 8
+var gridSizeX: int = 10
+var gridSizeY: int = 4
 var spacing: int = 1000
 
 @onready var Gm: Node2D = $GridManager
