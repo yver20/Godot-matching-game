@@ -3,6 +3,7 @@ extends Node2D
 var gridSizeX: int
 var gridSizeY: int
 var spacing: int
+var maximumSwapRange: int
 
 var pieces = [] # This will be board[x][y]
 var currentlyDraggedPiece: Area2D = null
@@ -10,6 +11,8 @@ var swappingPiece: Area2D
 
 #This variable is one of the first manipulatable rules for the game. we can increase difficulty by increasing this number.
 var minimumMatchSize = 3
+
+var resolved: bool = true
 
 @onready var pieceScene: Area2D = $Piece
 
@@ -52,48 +55,91 @@ func _input(event: InputEvent) -> void:
 
 func _on_piece_input_event(viewport: Node, event: InputEvent, shape_idx: int, piece: Area2D) -> void:
 	#picking up a piece
-	if event.is_action_pressed("grab"):
-		currentlyDraggedPiece = piece
+	if event.is_action_pressed("grab") and resolved:
 		piece.oldPosition = piece.global_position
 		piece.savedPosition = piece.global_position
 		piece.get_node("Image").z_index = 1
+		currentlyDraggedPiece = piece
 
 #dropping a piece
 	elif event.is_action_released("grab") and currentlyDraggedPiece:
+		resolved = false
 		#print("bruh")
-		currentlyDraggedPiece.global_position = currentlyDraggedPiece.savedPosition
-		currentlyDraggedPiece.get_node("Image").z_index = 0
-		if swappingPiece:
-			swappingPiece.global_position = swappingPiece.savedPosition
-			swappingPiece.oldPosition = swappingPiece.global_position
-			_update_piece_position(swappingPiece)
-		_update_piece_position(currentlyDraggedPiece)
+		print(swappingPiece)
+		if swappingPiece != null:
+			#print(currentlyDraggedPiece.savedPosition) #also check it's current position
+			currentlyDraggedPiece.global_position = currentlyDraggedPiece.savedPosition
+			_update_piece_grid_position(swappingPiece)
+			_update_piece_grid_position(currentlyDraggedPiece)
+			if _check_for_matches():
+				if currentlyDraggedPiece != null: #in this scenario, there was a match
+					currentlyDraggedPiece.get_node("Image").z_index = 0
+					currentlyDraggedPiece = null
+					swappingPiece = null
+				await _apply_gravity_to_pieces()
+				while _check_for_matches():
+					await _apply_gravity_to_pieces()
+			else: #Here, no valid match was found, so the move was invalid. We need to return the swapped pieces.
+				_reset_piece_position(currentlyDraggedPiece)
+				_reset_piece_position(swappingPiece)
+		if currentlyDraggedPiece != null: #here, we never moved the held piece, so we just put it in it's old spot
+			_reset_piece_position(currentlyDraggedPiece)
+			currentlyDraggedPiece.get_node("Image").z_index = 0
+			currentlyDraggedPiece = null
+			#Logically speaking, there shouldn't be any matches made, because nothing moved.
+			#however, at the start of the game, there might be matches already generated.
+			#this creates a unique senario where the dragged piece is returned, as well as all matches deleting.
+		swappingPiece = null
+		#for x in pieces.size():
+			#for y in pieces[x].size():
+				#if pieces[x][y] != null:
+					#_update_piece_grid_position(pieces[x][y])
+		resolved = true
 		_print_board_state() #this can be uncommented to check if moving is stored correctly.
-		
-		currentlyDraggedPiece = null
-		_apply_gravity_to_pieces()
 
 
 func _on_piece_area_entered(other: Area2D, piece: Area2D) -> void:
 	if currentlyDraggedPiece == piece:
 		if other.is_in_group("tileColliders"):
 			piece.savedPosition = other.global_position
-		elif other.is_in_group("pieces"):
+		elif other.is_in_group("pieces") and _are_pieces_in_range(piece, other):
 			# Swap positions
-			piece.savedPosition = other.global_position
-			other.savedPosition = piece.oldPosition
+			_swap_positions(piece, other)
+			print(other.oldPosition)
 			swappingPiece = other
 
 func _on_piece_area_exited(other: Area2D, piece: Area2D) -> void:
 	if currentlyDraggedPiece == piece:
 		if other.is_in_group("tileColliders"):
-			piece.savedPosition = piece.oldPosition
-		elif other.is_in_group("pieces"):
-			other.savedPosition = other.oldPosition
-			swappingPiece = null
+			if swappingPiece != null:
+				_reset_piece_position(swappingPiece)
+				piece.savedPosition = piece.oldPosition
+				swappingPiece = null
+		#elif other.is_in_group("pieces"):
+			#other.savedPosition = other.oldPosition
+
+#swaps the saved positions of the dragged piece and the piece you're hovering over. Also visually moves the other piece to your original location
+func _swap_positions(draggedPiece: Area2D, otherPiece: Area2D) -> void:
+	otherPiece.savedPosition = draggedPiece.oldPosition
+	draggedPiece.savedPosition = otherPiece.global_position
+	otherPiece.global_position = draggedPiece.oldPosition
+
+func _reset_piece_position(piece: Area2D) -> void:
+	piece.global_position = piece.oldPosition
+	piece.savedPosition = piece.oldPosition
+	_update_piece_grid_position(piece)
+
+func _are_pieces_in_range(pieceA, pieceB) -> bool:
+	var dX = abs(pieceA.gridPos.x - pieceB.gridPos.x)
+	var dY = abs(pieceA.gridPos.y - pieceB.gridPos.y)
+	 # straight line only (not diagonal)
+	var isStraightLine = (dX == 0 or dY == 0)
+	# distance within allowed range
+	var withinRange = (dX + dY) <= maximumSwapRange
+	return isStraightLine and withinRange
 
 #This complex function goes through the current 2D array of pieces and identifies all lines of same-type pieces and removes them.
-func _check_for_matches() -> void:
+func _check_for_matches() -> bool:
 
 	var matchedPieces = []
 	
@@ -178,13 +224,12 @@ func _check_for_matches() -> void:
 			matchedPieces[x].queue_free()
 			matchedPieces[x] = null
 		matchedPieces.clear()
-		await get_tree().create_timer(0.5).timeout
-		_apply_gravity_to_pieces()
-	
+		return true
+	else: return false
 
 #this updates a piece's information regarding it's position on the grid.
 #not only is the pieces 2D array updated, but also the variable of the piece keeping track of it's own position.
-func _update_piece_position(piece: Area2D) -> void:
+func _update_piece_grid_position(piece: Area2D) -> void:
 		# Remove the piece from its old location in the array
 	var old_x = int(piece.gridPos.x)
 	var old_y = int(piece.gridPos.y)
@@ -221,10 +266,10 @@ func _print_board_state() -> void:
 func _apply_gravity_to_pieces() -> void:
 	for x in pieces.size():
 		_apply_gravity_to_column(pieces[x])
-	await get_tree().create_timer(0.5).timeout
+		await get_tree().create_timer(0.1).timeout
+	await get_tree().create_timer(0.25).timeout
 	_refill_board()
-	_check_for_matches()
-	
+	await get_tree().create_timer(0.25).timeout
 
 func _apply_gravity_to_column(column: Array) -> void:
 	for y in range(column.size() - 2, -1, -1):
@@ -234,8 +279,9 @@ func _apply_gravity_to_column(column: Array) -> void:
 				newY += 1
 			if newY != y:
 				column[y].global_position = Vector2(column[y].global_position.x, newY*spacing)
-				_update_piece_position(column[y])
-				await get_tree().create_timer(0.1).timeout
+				column[y].oldPosition = column[y].global_position
+				column[y].savedPosition = column[y].global_position
+				_update_piece_grid_position(column[y])
 
 func _refill_board() -> void:
 	for x in pieces.size():
@@ -244,5 +290,5 @@ func _refill_board() -> void:
 				_generate_new_piece(x,y)
 
 func _process(delta: float) -> void:
-	if currentlyDraggedPiece:
+	if currentlyDraggedPiece != null:
 		currentlyDraggedPiece.global_position = get_global_mouse_position()

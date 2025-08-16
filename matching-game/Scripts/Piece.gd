@@ -23,6 +23,7 @@ func _initialize_piece() -> void:
 	#Could and/or should be expanded as more qualities are added to pieces.
 	#print("I exist!")
 	savedPosition = global_position
+	oldPosition = global_position
 	match pieceType:
 		0: $Image.texture = BIG_LOADING
 		1: $Image.texture = BLURRY_JIM
