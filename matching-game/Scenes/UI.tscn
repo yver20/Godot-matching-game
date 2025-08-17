@@ -3,26 +3,49 @@
 [node name="Ui" type="Node2D"]
 
 [node name="NewBoardButton" type="Button" parent="."]
-offset_right = 8.0
-offset_bottom = 8.0
+offset_left = 7.0
+offset_top = 314.0
+offset_right = 174.0
+offset_bottom = 345.0
 text = "Generate new board"
 
-[node name="BoardSizeX" type="TextEdit" parent="."]
-offset_left = 63.0
-offset_top = 127.0
-offset_right = 189.0
-offset_bottom = 172.0
-placeholder_text = "Board size X"
-wrap_mode = 1
-caret_blink = true
-text_direction = 1
+[node name="HSlider2" type="HSlider" parent="."]
+offset_left = 46.0
+offset_top = 271.0
+offset_right = 136.0
+offset_bottom = 287.0
+min_value = 3.0
+max_value = 6.0
+value = 6.0
 
-[node name="BoardSizeY" type="TextEdit" parent="."]
-offset_left = 202.0
-offset_top = 122.0
-offset_right = 328.0
-offset_bottom = 167.0
-placeholder_text = "Board size Y"
-wrap_mode = 1
-caret_blink = true
-text_direction = 1
+[node name="HSlider" type="HSlider" parent="."]
+offset_left = 36.0
+offset_top = 207.0
+offset_right = 166.0
+offset_bottom = 223.0
+min_value = 1.0
+max_value = 10.0
+value = 7.0
+
+[node name="VSlider" type="VSlider" parent="."]
+offset_left = 14.0
+offset_top = 61.0
+offset_right = 30.0
+offset_bottom = 220.0
+min_value = 1.0
+max_value = 10.0
+value = 7.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+offset_left = 37.0
+offset_top = 37.0
+offset_right = 158.0
+offset_bottom = 77.0
+text = "Board size"
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="."]
+offset_left = 20.0
+offset_top = 240.0
+offset_right = 172.0
+offset_bottom = 280.0
+text = "Amount of pieces"
