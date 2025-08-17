@@ -6,6 +6,8 @@ var gridSizeX: int = 7
 var gridSizeY: int = 7
 var spacing: int = 1000
 var maximumSwapRange: int = 1
+var typeCount: int = 7
+var mustMatch: bool = true
 
 @onready var Gm: Node2D = $GridManager
 @onready var Pm: Node2D = $PieceManager
@@ -30,6 +32,7 @@ func _generate_board() -> void:
 	Pm.gridSizeY = gridSizeY
 	Pm.spacing = spacing
 	Pm.maximumSwapRange = maximumSwapRange
+	Pm.typeCount = typeCount
 	
 	Gm._generate_grid()
 	Pm._generate_pieces()
@@ -41,5 +44,11 @@ func _on_ui_new_board() -> void:
 
 #This is called whenever the player messes with any of the customizable settings
 #The signal tells us what setting changed, so we know what to edit here then.
-func _on_ui_new_value(newValue: int, type: String) -> void:
-	pass # Replace with function body.
+func _on_ui_new_value(newValue, type: String) -> void:
+	match type:
+		'horizontal': gridSizeX = int(newValue)
+		'vertical': gridSizeY = int(newValue)
+		'pieces': typeCount = int(newValue)
+		'range': pass
+		'match': pass
+		'': pass

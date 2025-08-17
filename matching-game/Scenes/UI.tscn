@@ -6,25 +6,48 @@
 script = ExtResource("1_khdpo")
 
 [node name="NewBoardButton" type="Button" parent="."]
-offset_left = 7.0
-offset_top = 314.0
-offset_right = 174.0
-offset_bottom = 345.0
+offset_left = 20.0
+offset_top = 384.0
+offset_right = 187.0
+offset_bottom = 415.0
 text = "Generate new board"
 
 [node name="PiecesSlider" type="HSlider" parent="."]
-offset_left = 46.0
-offset_top = 271.0
-offset_right = 136.0
-offset_bottom = 287.0
+offset_left = 52.0
+offset_top = 270.0
+offset_right = 176.0
+offset_bottom = 286.0
 min_value = 3.0
 max_value = 6.0
 value = 6.0
 
+[node name="AmountOfPieces" type="RichTextLabel" parent="PiecesSlider"]
+offset_left = -26.0
+offset_top = -31.0
+offset_right = 111.0
+offset_bottom = -8.0
+text = "Amount of pieces"
+
+[node name="RangeSlider" type="HSlider" parent="."]
+offset_left = 52.0
+offset_top = 314.0
+offset_right = 176.0
+offset_bottom = 330.0
+min_value = 1.0
+max_value = 10.0
+value = 1.0
+
+[node name="AmountOfPieces" type="RichTextLabel" parent="RangeSlider"]
+offset_left = -26.0
+offset_top = -31.0
+offset_right = 24.0
+offset_bottom = -5.0
+text = "Range"
+
 [node name="HSlider" type="HSlider" parent="."]
 offset_left = 52.0
 offset_top = 227.0
-offset_right = 174.0
+offset_right = 176.0
 offset_bottom = 243.0
 min_value = 1.0
 max_value = 10.0
@@ -33,8 +56,8 @@ value = 7.0
 [node name="width" type="RichTextLabel" parent="HSlider"]
 offset_left = -6.0
 offset_top = -20.0
-offset_right = 154.0
-offset_bottom = 20.0
+offset_right = 135.0
+offset_bottom = 3.0
 mouse_filter = 2
 text = "1 2 3 4 5 6 7 8 9 10"
 
@@ -59,18 +82,21 @@ text = "1 2 3 4 5 6 7 8 9 10"
 [node name="BoardSize" type="RichTextLabel" parent="."]
 offset_left = 37.0
 offset_top = 37.0
-offset_right = 158.0
-offset_bottom = 77.0
+offset_right = 119.0
+offset_bottom = 60.0
 text = "Board size"
 
-[node name="AmountOfPieces" type="RichTextLabel" parent="."]
+[node name="MatchToggle" type="CheckButton" parent="."]
 offset_left = 20.0
-offset_top = 240.0
-offset_right = 172.0
-offset_bottom = 280.0
-text = "Amount of pieces"
+offset_top = 350.0
+offset_right = 198.0
+offset_bottom = 381.0
+button_pressed = true
+text = "Match Required?"
 
 [connection signal="pressed" from="NewBoardButton" to="." method="_on_new_board_button_pressed"]
 [connection signal="value_changed" from="PiecesSlider" to="." method="_on_pieces_slider_value_changed"]
+[connection signal="value_changed" from="RangeSlider" to="." method="_on_range_slider_value_changed"]
 [connection signal="value_changed" from="HSlider" to="." method="_on_horizontal_slider_value_changed"]
 [connection signal="value_changed" from="VSlider" to="." method="_on_vertical_slider_value_changed"]
+[connection signal="toggled" from="MatchToggle" to="." method="_on_match_toggle_toggled"]

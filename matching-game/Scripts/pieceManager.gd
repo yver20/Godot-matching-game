@@ -4,6 +4,8 @@ var gridSizeX: int
 var gridSizeY: int
 var spacing: int
 var maximumSwapRange: int
+var typeCount: int
+var mustMatch: bool
 
 var pieces = [] # This will be board[x][y]
 var currentlyDraggedPiece: Area2D = null
@@ -45,7 +47,7 @@ func _clear_pieces() -> void:
 func _generate_new_piece(x: int, y: int) -> void:
 	var currentPiece = pieceScene.duplicate()
 	add_child(currentPiece)
-	currentPiece.pieceType = randi_range(0,6)
+	currentPiece.pieceType = randi_range(0,typeCount-1)
 	currentPiece.add_to_group("pieces")
 	currentPiece.global_position = Vector2(x*spacing, y*spacing)
 	currentPiece.gridPos =  Vector2(x,y)
@@ -79,7 +81,7 @@ func _on_piece_input_event(viewport: Node, event: InputEvent, shape_idx: int, pi
 		print(swappingPiece)
 		if swappingPiece != null:
 			#print(currentlyDraggedPiece.savedPosition) #also check it's current position
-			currentlyDraggedPiece.global_position = currentlyDraggedPiece.savedPosition
+			#currentlyDraggedPiece.global_position = currentlyDraggedPiece.savedPosition
 			_update_piece_grid_position(swappingPiece)
 			_update_piece_grid_position(currentlyDraggedPiece)
 			if _check_for_matches():
@@ -90,16 +92,20 @@ func _on_piece_input_event(viewport: Node, event: InputEvent, shape_idx: int, pi
 				await _apply_gravity_to_pieces()
 				while _check_for_matches():
 					await _apply_gravity_to_pieces()
-			else: #Here, no valid match was found, so the move was invalid. We need to return the swapped pieces.
+			elif mustMatch: #Here, no valid match was found, so the move was invalid. We need to return the swapped pieces.
 				_reset_piece_position(currentlyDraggedPiece)
 				_reset_piece_position(swappingPiece)
-		if currentlyDraggedPiece != null: #here, we never moved the held piece, so we just put it in it's old spot
+				currentlyDraggedPiece.get_node("Image").z_index = 0
+				currentlyDraggedPiece = null
+			else: #in this scenario, matching is optional, but no match was made.
+				#No resets needed, but we do need to drop the current piece.
+				currentlyDraggedPiece.global_position = currentlyDraggedPiece.savedPosition
+				currentlyDraggedPiece.get_node("Image").z_index = 0
+				currentlyDraggedPiece = null
+		else: #here, we didn't actually move the dragged piece to a valid spot, so it needs to be reset.
 			_reset_piece_position(currentlyDraggedPiece)
 			currentlyDraggedPiece.get_node("Image").z_index = 0
 			currentlyDraggedPiece = null
-			#Logically speaking, there shouldn't be any matches made, because nothing moved.
-			#however, at the start of the game, there might be matches already generated.
-			#this creates a unique senario where the dragged piece is returned, as well as all matches deleting.
 		swappingPiece = null
 		#for x in pieces.size():
 			#for y in pieces[x].size():
@@ -132,7 +138,6 @@ func _on_piece_area_exited(other: Area2D, piece: Area2D) -> void:
 #swaps the saved positions of the dragged piece and the piece you're hovering over. Also visually moves the other piece to your original location
 func _swap_positions(draggedPiece: Area2D, otherPiece: Area2D) -> void:
 	otherPiece.savedPosition = draggedPiece.oldPosition
-	draggedPiece.savedPosition = otherPiece.global_position
 	otherPiece.global_position = draggedPiece.oldPosition
 
 func _reset_piece_position(piece: Area2D) -> void:
