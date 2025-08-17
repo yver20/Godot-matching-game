@@ -21,7 +21,7 @@ func _ready() -> void:
 
 #This function should be run at the beginning of the game, generating a new board of pieces.
 func _generate_pieces() -> void:
-	
+	resolved = false
 	print("Generating pieces...")
 	pieces.resize(gridSizeX)
 	for x in gridSizeX:
@@ -33,6 +33,7 @@ func _generate_pieces() -> void:
 		await _apply_gravity_to_pieces()
 		while _check_for_matches():
 			await _apply_gravity_to_pieces()
+	resolved = true
 #The above logic divides the grid in columns. Every array in the 'pieces' array is one column.
 
 func _generate_new_piece(x: int, y: int) -> void:
