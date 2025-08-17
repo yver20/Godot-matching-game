@@ -29,6 +29,10 @@ func _generate_pieces() -> void:
 		for y in gridSizeY:
 			pieces[x].append(null)
 			_generate_new_piece(x, y)
+	if _check_for_matches():
+		await _apply_gravity_to_pieces()
+		while _check_for_matches():
+			await _apply_gravity_to_pieces()
 #The above logic divides the grid in columns. Every array in the 'pieces' array is one column.
 
 func _generate_new_piece(x: int, y: int) -> void:
