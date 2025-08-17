@@ -9,7 +9,7 @@ offset_right = 174.0
 offset_bottom = 345.0
 text = "Generate new board"
 
-[node name="HSlider2" type="HSlider" parent="."]
+[node name="PiecesSlider" type="HSlider" parent="."]
 offset_left = 46.0
 offset_top = 271.0
 offset_right = 136.0
@@ -19,31 +19,48 @@ max_value = 6.0
 value = 6.0
 
 [node name="HSlider" type="HSlider" parent="."]
-offset_left = 36.0
-offset_top = 207.0
-offset_right = 166.0
-offset_bottom = 223.0
+offset_left = 52.0
+offset_top = 227.0
+offset_right = 174.0
+offset_bottom = 243.0
 min_value = 1.0
 max_value = 10.0
 value = 7.0
+
+[node name="width" type="RichTextLabel" parent="HSlider"]
+offset_left = -6.0
+offset_top = -20.0
+offset_right = 154.0
+offset_bottom = 20.0
+mouse_filter = 2
+text = "1 2 3 4 5 6 7 8 9 10"
 
 [node name="VSlider" type="VSlider" parent="."]
-offset_left = 14.0
-offset_top = 61.0
-offset_right = 30.0
-offset_bottom = 220.0
+offset_left = 20.0
+offset_top = 72.0
+offset_right = 36.0
+offset_bottom = 202.0
 min_value = 1.0
 max_value = 10.0
 value = 7.0
 
-[node name="RichTextLabel" type="RichTextLabel" parent="."]
+[node name="hight" type="RichTextLabel" parent="VSlider"]
+offset_left = 16.0
+offset_top = 133.0
+offset_right = 176.0
+offset_bottom = 173.0
+rotation = -1.57079
+mouse_filter = 2
+text = "1 2 3 4 5 6 7 8 9 10"
+
+[node name="BoardSize" type="RichTextLabel" parent="."]
 offset_left = 37.0
 offset_top = 37.0
 offset_right = 158.0
 offset_bottom = 77.0
 text = "Board size"
 
-[node name="RichTextLabel2" type="RichTextLabel" parent="."]
+[node name="AmountOfPieces" type="RichTextLabel" parent="."]
 offset_left = 20.0
 offset_top = 240.0
 offset_right = 172.0
