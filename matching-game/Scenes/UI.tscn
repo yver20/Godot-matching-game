@@ -1,6 +1,9 @@
-[gd_scene format=3 uid="uid://d3ol5htvkag5f"]
+[gd_scene load_steps=2 format=3 uid="uid://d3ol5htvkag5f"]
+
+[ext_resource type="Script" path="res://Scenes/ui.gd" id="1_khdpo"]
 
 [node name="Ui" type="Node2D"]
+script = ExtResource("1_khdpo")
 
 [node name="NewBoardButton" type="Button" parent="."]
 offset_left = 7.0
@@ -66,3 +69,8 @@ offset_top = 240.0
 offset_right = 172.0
 offset_bottom = 280.0
 text = "Amount of pieces"
+
+[connection signal="pressed" from="NewBoardButton" to="." method="_on_new_board_button_pressed"]
+[connection signal="value_changed" from="PiecesSlider" to="." method="_on_pieces_slider_value_changed"]
+[connection signal="value_changed" from="HSlider" to="." method="_on_horizontal_slider_value_changed"]
+[connection signal="value_changed" from="VSlider" to="." method="_on_vertical_slider_value_changed"]
