@@ -4,7 +4,7 @@ extends Node2D
 
 var gridSizeX: int = 7
 var gridSizeY: int = 7
-var spacing: int = 1000
+var spacing: int = 1050
 var maximumSwapRange: int = 1
 var typeCount: int = 7
 var mustMatch: bool = true
@@ -33,6 +33,7 @@ func _generate_board() -> void:
 	Pm.spacing = spacing
 	Pm.maximumSwapRange = maximumSwapRange
 	Pm.typeCount = typeCount
+	Pm.mustMatch = mustMatch
 	
 	Gm._generate_grid()
 	Pm._generate_pieces()
@@ -49,6 +50,6 @@ func _on_ui_new_value(newValue, type: String) -> void:
 		'horizontal': gridSizeX = int(newValue)
 		'vertical': gridSizeY = int(newValue)
 		'pieces': typeCount = int(newValue)
-		'range': pass
-		'match': pass
+		'range': maximumSwapRange = int(newValue)
+		'match': mustMatch = newValue
 		'': pass
