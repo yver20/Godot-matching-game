@@ -9,6 +9,7 @@ var maximumSwapRange: int = 1
 var typeCount: int = 7
 var mustMatch: bool = true
 var refillAlgorithm: String = 'random'
+var gameSpeed: float = 1
 
 @onready var Gm: Node2D = $GridManager
 @onready var Pm: Node2D = $PieceManager
@@ -36,6 +37,7 @@ func _generate_board() -> void:
 	Pm.typeCount = typeCount
 	Pm.mustMatch = mustMatch
 	Pm.refillAlgorithm = refillAlgorithm
+	Pm.gameSpeed = gameSpeed
 	
 	Gm._generate_grid()
 	Pm._generate_pieces()
@@ -55,3 +57,5 @@ func _on_ui_new_value(newValue, type: String) -> void:
 		'range': maximumSwapRange = int(newValue)
 		'match': mustMatch = newValue
 		'refill': refillAlgorithm = newValue
+		'speed': gameSpeed = newValue
+		_: pass

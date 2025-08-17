@@ -33,3 +33,7 @@ func _on_refill_select_item_selected(index: int) -> void:
 		2: newValue.emit('random', 'refill')
 		3: newValue.emit('random', 'refill')
 		4: newValue.emit('random', 'refill')
+
+
+func _on_game_speed_slider_value_changed(value: float) -> void:
+	newValue.emit(value, 'speed')

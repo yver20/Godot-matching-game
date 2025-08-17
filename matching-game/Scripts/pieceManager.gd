@@ -7,6 +7,7 @@ var maximumSwapRange: int
 var typeCount: int
 var mustMatch: bool
 var refillAlgorithm: String
+var gameSpeed: float
 
 var pieces = [] # This will be board[x][y]
 var currentlyDraggedPiece: Area2D = null
@@ -307,10 +308,10 @@ func _print_board_state() -> void:
 func _apply_gravity_to_pieces() -> void:
 	for x in pieces.size():
 		await _apply_gravity_to_column(pieces[x])
-		await get_tree().create_timer(0.05).timeout
-	await get_tree().create_timer(0.1).timeout
+		await get_tree().create_timer(0.025/gameSpeed).timeout
+	await get_tree().create_timer(0.1/gameSpeed).timeout
 	await _refill_board()
-	await get_tree().create_timer(0.1).timeout
+	await get_tree().create_timer(0.1/gameSpeed).timeout
 
 func _apply_gravity_to_column(column: Array) -> void:
 	for y in range(column.size() - 2, -1, -1):
@@ -328,6 +329,7 @@ func _refill_board() -> void:
 	for x in pieces.size():
 		for y in pieces[x].size():
 			if pieces[x][y] == null:
+				await get_tree().create_timer(0.01/gameSpeed).timeout
 				_generate_new_piece(x,y)
 
 func _process(delta: float) -> void:
