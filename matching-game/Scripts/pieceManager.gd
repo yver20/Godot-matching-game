@@ -306,11 +306,11 @@ func _print_board_state() -> void:
 #Once finished, this will make all pieces with empty slots directly under them drop one spot.
 func _apply_gravity_to_pieces() -> void:
 	for x in pieces.size():
-		_apply_gravity_to_column(pieces[x])
-		await get_tree().create_timer(0.1).timeout
-	await get_tree().create_timer(0.25).timeout
-	_refill_board()
-	await get_tree().create_timer(0.25).timeout
+		await _apply_gravity_to_column(pieces[x])
+		await get_tree().create_timer(0.05).timeout
+	await get_tree().create_timer(0.1).timeout
+	await _refill_board()
+	await get_tree().create_timer(0.1).timeout
 
 func _apply_gravity_to_column(column: Array) -> void:
 	for y in range(column.size() - 2, -1, -1):
