@@ -8,6 +8,7 @@ var spacing: int = 1050
 var maximumSwapRange: int = 1
 var typeCount: int = 7
 var mustMatch: bool = true
+var refillAlgorithm: String = 'random'
 
 @onready var Gm: Node2D = $GridManager
 @onready var Pm: Node2D = $PieceManager
@@ -34,6 +35,7 @@ func _generate_board() -> void:
 	Pm.maximumSwapRange = maximumSwapRange
 	Pm.typeCount = typeCount
 	Pm.mustMatch = mustMatch
+	Pm.refillAlgorithm = refillAlgorithm
 	
 	Gm._generate_grid()
 	Pm._generate_pieces()
@@ -52,4 +54,4 @@ func _on_ui_new_value(newValue, type: String) -> void:
 		'pieces': typeCount = int(newValue)
 		'range': maximumSwapRange = int(newValue)
 		'match': mustMatch = newValue
-		'': pass
+		'refill': refillAlgorithm = newValue

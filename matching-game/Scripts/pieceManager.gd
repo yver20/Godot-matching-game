@@ -6,10 +6,12 @@ var spacing: int
 var maximumSwapRange: int
 var typeCount: int
 var mustMatch: bool
+var refillAlgorithm: String
 
 var pieces = [] # This will be board[x][y]
 var currentlyDraggedPiece: Area2D = null
 var swappingPiece: Area2D
+var orderCount: int = 0
 
 #This variable is one of the first manipulatable rules for the game. we can increase difficulty by increasing this number.
 var minimumMatchSize = 3
@@ -45,20 +47,33 @@ func _clear_pieces() -> void:
 			pieces[x][y].queue_free()
 
 func _generate_new_piece(x: int, y: int) -> void:
+	#This is basically my current 'refill algorithm'
+	#I'm assuming I will be able to apply other algorithms to one piece at a time as well.
 	var currentPiece = pieceScene.duplicate()
 	add_child(currentPiece)
-	currentPiece.pieceType = randi_range(0,typeCount-1)
+	match refillAlgorithm:
+		'random': currentPiece.pieceType = randi_range(0,typeCount-1)
+		'order':
+			currentPiece.pieceType = orderCount
+			orderCount += 1
+			if orderCount == typeCount: orderCount = 0
+		'balanced': pass #This algorithm will try to 'balance' the board by creating pieces that are currently less common on the board
+		#Note for balanced: We can't just put in the least occurring piece every time. Then we'd immediately create a match once its 3 or less than the second least occurring piece. (do the logic)
+		'assisting': pass #This algorithm will try to 'assist' the player by creating pieces in such a way that they can be used to make a new match (soon tm)
+		'fighting': pass #This algorithm will try to 'fight' the player by creating pieces that can't be used to create matches in their new spots.
+		#obviously, you'll still be able to make matches with these pieces, just not in your next move.
+		#Note for 'fighting': Guarranteed to never create 'computer cascades' on its own.
+		
+		_: currentPiece.pieceType = randi_range(0,typeCount-1) #when in doubt, just make a random piece
+	
 	currentPiece.add_to_group("pieces")
 	currentPiece.global_position = Vector2(x*spacing, y*spacing)
 	currentPiece.gridPos =  Vector2(x,y)
 	currentPiece._initialize_piece()
 	
-	# Input
 	currentPiece.connect("input_event", Callable(self, "_on_piece_input_event").bind(currentPiece))
-	# Collision forwarding
 	currentPiece.connect("area_entered", Callable(self, "_on_piece_area_entered").bind(currentPiece))
 	currentPiece.connect("area_exited", Callable(self, "_on_piece_area_exited").bind(currentPiece))
-	#current piece needs to be bound instead?
 	
 	pieces[x][y] = currentPiece
 

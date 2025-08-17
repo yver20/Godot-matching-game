@@ -24,3 +24,12 @@ func _on_range_slider_value_changed(value: float) -> void:
 
 func _on_match_toggle_toggled(toggled_on: bool) -> void:
 	newValue.emit(toggled_on, 'match')
+
+
+func _on_refill_select_item_selected(index: int) -> void:
+	match index:
+		0: newValue.emit('random', 'refill')
+		1: newValue.emit('order', 'refill')
+		2: newValue.emit('random', 'refill')
+		3: newValue.emit('random', 'refill')
+		4: newValue.emit('random', 'refill')
