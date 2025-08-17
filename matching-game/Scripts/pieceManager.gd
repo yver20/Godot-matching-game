@@ -81,12 +81,15 @@ func _on_piece_input_event(viewport: Node, event: InputEvent, shape_idx: int, pi
 		print(swappingPiece)
 		if swappingPiece != null:
 			#print(currentlyDraggedPiece.savedPosition) #also check it's current position
-			#currentlyDraggedPiece.global_position = currentlyDraggedPiece.savedPosition
+			#set the position of the dragged piece to whatever you landed on. If it's invalid, it'll reset to its old eventually anyway
+			currentlyDraggedPiece.global_position = currentlyDraggedPiece.savedPosition
 			_update_piece_grid_position(swappingPiece)
 			_update_piece_grid_position(currentlyDraggedPiece)
 			if _check_for_matches():
 				if currentlyDraggedPiece != null: #in this scenario, there was a match
 					currentlyDraggedPiece.get_node("Image").z_index = 0
+					currentlyDraggedPiece.oldPosition = currentlyDraggedPiece.savedPosition
+					swappingPiece.oldPosition = swappingPiece.global_position
 					currentlyDraggedPiece = null
 					swappingPiece = null
 				await _apply_gravity_to_pieces()
@@ -96,16 +99,16 @@ func _on_piece_input_event(viewport: Node, event: InputEvent, shape_idx: int, pi
 				_reset_piece_position(currentlyDraggedPiece)
 				_reset_piece_position(swappingPiece)
 				currentlyDraggedPiece.get_node("Image").z_index = 0
-				currentlyDraggedPiece = null
 			else: #in this scenario, matching is optional, but no match was made.
 				#No resets needed, but we do need to drop the current piece.
-				currentlyDraggedPiece.global_position = currentlyDraggedPiece.savedPosition
+				currentlyDraggedPiece.oldPosition = currentlyDraggedPiece.savedPosition
+				swappingPiece.oldPosition = swappingPiece.global_position
 				currentlyDraggedPiece.get_node("Image").z_index = 0
-				currentlyDraggedPiece = null
+			#_confirm_piece_position(swappingPiece)
 		else: #here, we didn't actually move the dragged piece to a valid spot, so it needs to be reset.
 			_reset_piece_position(currentlyDraggedPiece)
 			currentlyDraggedPiece.get_node("Image").z_index = 0
-			currentlyDraggedPiece = null
+		currentlyDraggedPiece = null
 		swappingPiece = null
 		#for x in pieces.size():
 			#for y in pieces[x].size():
@@ -117,27 +120,34 @@ func _on_piece_input_event(viewport: Node, event: InputEvent, shape_idx: int, pi
 
 func _on_piece_area_entered(other: Area2D, piece: Area2D) -> void:
 	if currentlyDraggedPiece == piece:
-		if other.is_in_group("tileColliders"):
-			piece.savedPosition = other.global_position
+		if other.is_in_group("tiles"):
+			if _are_pieces_in_range(piece, other):
+				piece.savedPosition = other.global_position
 		elif other.is_in_group("pieces") and _are_pieces_in_range(piece, other):
+			if swappingPiece != null:
+				_reset_piece_position(swappingPiece)
 			# Swap positions
-			_swap_positions(piece, other)
+			_move_other_piece(piece, other)
 			print(other.oldPosition)
 			swappingPiece = other
 
 func _on_piece_area_exited(other: Area2D, piece: Area2D) -> void:
 	if currentlyDraggedPiece == piece:
-		if other.is_in_group("tileColliders"):
+		if other.is_in_group("tiles") and other.global_position != piece.oldPosition:
 			if swappingPiece != null:
-				_reset_piece_position(swappingPiece)
-				piece.savedPosition = piece.oldPosition
-				swappingPiece = null
+				if other.global_position == swappingPiece.oldPosition:
+					_reset_piece_position(swappingPiece)
+					piece.savedPosition = piece.oldPosition
+					swappingPiece = null
 		#elif other.is_in_group("pieces"):
 			#other.savedPosition = other.oldPosition
 
+func _confirm_piece_position(piece: Area2D) -> void:
+	piece.global_position = piece.savedPosition
+	piece.oldPosition = piece.savedPosition
+
 #swaps the saved positions of the dragged piece and the piece you're hovering over. Also visually moves the other piece to your original location
-func _swap_positions(draggedPiece: Area2D, otherPiece: Area2D) -> void:
-	otherPiece.savedPosition = draggedPiece.oldPosition
+func _move_other_piece(draggedPiece: Area2D, otherPiece: Area2D) -> void:
 	otherPiece.global_position = draggedPiece.oldPosition
 
 func _reset_piece_position(piece: Area2D) -> void:
