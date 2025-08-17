@@ -36,6 +36,12 @@ func _generate_pieces() -> void:
 	resolved = true
 #The above logic divides the grid in columns. Every array in the 'pieces' array is one column.
 
+#Simple and effective. clears all pieces. (assuming they're stored in the 2D array correctly)
+func _clear_pieces() -> void:
+	for x in pieces.size():
+		for y in pieces[x].size():
+			pieces[x][y].queue_free()
+
 func _generate_new_piece(x: int, y: int) -> void:
 	var currentPiece = pieceScene.duplicate()
 	add_child(currentPiece)

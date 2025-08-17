@@ -27,7 +27,11 @@ func _generate_grid() -> void:
 			currentTile.gridPos = Vector2(x,y)
 			currentTile.add_to_group("tiles")
 			tiles[x].append(currentTile)
-			
+
+func _clear_grid() -> void:
+	for x in tiles.size():
+		for y in tiles[x].size():
+			tiles[x][y].queue_free()
 #The above logic divides the grid in columns. Every array in the 'tiles' array is one column.
 #In other words, every 1st entry in one of the arrays of 'tiles' is part of the top row, every second entry is part of the second row, and so on.
 
