@@ -3,6 +3,8 @@ extends Node2D
 signal newValue(newValue, type: String)
 signal newBoard
 
+@onready var scoreText: RichTextLabel = $Score
+
 func _on_new_board_button_pressed() -> void:
 	newBoard.emit()
 
@@ -39,3 +41,7 @@ func _on_refill_select_item_selected(index: int) -> void:
 
 func _on_game_speed_slider_value_changed(value: float) -> void:
 	newValue.emit(value, 'speed')
+
+
+func _on_board_manager_score_update(score: int) -> void:
+	scoreText.text = "score %s" % str(score)

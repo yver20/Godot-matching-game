@@ -125,6 +125,14 @@ offset_right = 135.0
 offset_bottom = -1.0
 text = "Game speed"
 
+[node name="Score" type="RichTextLabel" parent="."]
+clip_contents = false
+offset_left = 26.0
+offset_top = 538.0
+offset_right = 129.0
+offset_bottom = 561.0
+text = "Score: 0"
+
 [connection signal="value_changed" from="PiecesSlider" to="." method="_on_pieces_slider_value_changed"]
 [connection signal="value_changed" from="RangeSlider" to="." method="_on_range_slider_value_changed"]
 [connection signal="value_changed" from="HSlider" to="." method="_on_horizontal_slider_value_changed"]

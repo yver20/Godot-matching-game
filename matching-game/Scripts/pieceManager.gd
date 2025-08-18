@@ -1,5 +1,7 @@
 extends Node2D
 
+signal scoreUpdate(score: int)
+
 var gridSizeX: int
 var gridSizeY: int
 var spacing: int
@@ -8,6 +10,8 @@ var typeCount: int
 var mustMatch: bool
 var refillAlgorithm: String
 var gameSpeed: float
+#We can increase difficulty by increasing this number.
+var minimumMatchSize = 3
 
 var pieces = [] # This will be board[x][y]
 var currentlyDraggedPiece: Area2D = null
@@ -16,8 +20,7 @@ var orderCount: int = 0
 #all algorithms that are not an 'algorithm randomizer'. to be used for said randomizers which are currently 'moodswing' and 'chaos'
 var algorithms: Array = ['random','order','balanced','assisting','fighting']
 
-#This variable is one of the first manipulatable rules for the game. we can increase difficulty by increasing this number.
-var minimumMatchSize = 3
+var score: int = 0
 
 var resolved: bool = true
 
@@ -36,9 +39,9 @@ func _generate_pieces() -> void:
 		for y in gridSizeY:
 			pieces[x].append(null)
 			_generate_new_piece(x, y)
-	if _check_for_matches():
+	if _check_for_matches(false):
 		await _apply_gravity_to_pieces()
-		while _check_for_matches():
+		while _check_for_matches(false):
 			await _apply_gravity_to_pieces()
 	resolved = true
 #The above logic divides the grid in columns. Every array in the 'pieces' array is one column.
@@ -159,7 +162,7 @@ func _on_piece_input_event(viewport: Node, event: InputEvent, shape_idx: int, pi
 			currentlyDraggedPiece.global_position = currentlyDraggedPiece.savedPosition
 			_update_piece_grid_position(swappingPiece)
 			_update_piece_grid_position(currentlyDraggedPiece)
-			if _check_for_matches():
+			if _check_for_matches(true):
 				if currentlyDraggedPiece != null: #in this scenario, there was a match
 					currentlyDraggedPiece.get_node("Image").z_index = 0
 					currentlyDraggedPiece.oldPosition = currentlyDraggedPiece.savedPosition
@@ -167,7 +170,7 @@ func _on_piece_input_event(viewport: Node, event: InputEvent, shape_idx: int, pi
 					currentlyDraggedPiece = null
 					swappingPiece = null
 				await _apply_gravity_to_pieces()
-				while _check_for_matches():
+				while _check_for_matches(true):
 					await _apply_gravity_to_pieces()
 			elif mustMatch: #Here, no valid match was found, so the move was invalid. We need to return the swapped pieces.
 				_reset_piece_position(currentlyDraggedPiece)
@@ -237,7 +240,7 @@ func _are_pieces_in_range(pieceA, pieceB) -> bool:
 	return isStraightLine and withinRange
 
 #This complex function goes through the current 2D array of pieces and identifies all lines of same-type pieces and removes them.
-func _check_for_matches() -> bool:
+func _check_for_matches(scoring: bool) -> bool:
 
 	var matchedPieces = []
 	
@@ -317,6 +320,9 @@ func _check_for_matches() -> bool:
 	
 	#finally, remove all matching pieces:
 	if !matchedPieces.is_empty():
+		if scoring:
+			score += matchedPieces.size()
+			scoreUpdate.emit(score)
 		for x in matchedPieces.size():
 			pieces[matchedPieces[x].gridPos.x][matchedPieces[x].gridPos.y] = null
 			matchedPieces[x].queue_free()

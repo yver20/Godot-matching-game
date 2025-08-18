@@ -10,3 +10,5 @@ script = ExtResource("1_opy2t")
 [node name="GridManager" parent="." instance=ExtResource("2_owknp")]
 
 [node name="PieceManager" parent="." instance=ExtResource("3_eo7lr")]
+
+[connection signal="scoreUpdate" from="PieceManager" to="." method="_on_piece_manager_score_update"]

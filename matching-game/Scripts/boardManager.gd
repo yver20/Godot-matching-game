@@ -1,5 +1,6 @@
 extends Node2D
 
+signal scoreUpdate(score: int)
 #This is where stuff like boardsize is given to the other managers, and where information regarding matching is transferred between them.
 
 var gridSizeX: int = 7
@@ -38,6 +39,8 @@ func _generate_board() -> void:
 	Pm.mustMatch = mustMatch
 	Pm.refillAlgorithm = refillAlgorithm
 	Pm.gameSpeed = gameSpeed
+	Pm.score = 0
+	scoreUpdate.emit(0)
 	
 	Gm._generate_grid()
 	Pm._generate_pieces()
@@ -59,3 +62,7 @@ func _on_ui_new_value(newValue, type: String) -> void:
 		'refill': refillAlgorithm = newValue
 		'speed': gameSpeed = newValue
 		_: pass
+
+
+func _on_piece_manager_score_update(score: int) -> void:
+	scoreUpdate.emit(score)
