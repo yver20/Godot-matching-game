@@ -59,14 +59,15 @@ func _generate_new_piece(x: int, y: int, algorithm = 'random') -> void:
 			currentPiece.pieceType = orderCount
 			orderCount += 1
 			if orderCount == typeCount: orderCount = 0
-		'balanced':
+		'balanced':#This algorithm will try to 'balance' the board by preffering pieces that are currently less common on the board
+			#Note for balanced: We can't just put in the least occurring piece every time. Then we'd immediately create a match once its 3 or less than the second least occurring piece. (do the logic)
 			var typeCounter: Array
 			var types: Array
 			for t in typeCount:
 				typeCounter.append(0)
 				types.append(t)
 			
-			var gridSize: int = gridSizeX * gridSizeY
+			var gridSize: int
 			
 			for gridX in pieces.size():
 				for gridY in pieces[gridX].size():
@@ -75,9 +76,10 @@ func _generate_new_piece(x: int, y: int, algorithm = 'random') -> void:
 					# In theory, I could also keep track of this as pieces are created. Then, I wouldn't have to go through all pieces. every time I make a new piece.
 					if pieces[gridX][gridY] != null:
 						typeCounter[pieces[gridX][gridY].pieceType] += 1
+						gridSize += 1
 			
 			print(typeCounter)
-			print("")
+			print(gridSize)
 			#set each types rarity to the reverse rarity in percentage (for example, (1 - (5/25))*100 = 80 AKA the opposite of it's percentage of presence)
 			for t in typeCounter.size():
 				typeCounter[t] = (1 - (float(typeCounter[t]) / float(gridSize))) * 100
@@ -87,13 +89,37 @@ func _generate_new_piece(x: int, y: int, algorithm = 'random') -> void:
 			#Types is an array containing the index of each type. the RNG randomly picks one with the rarity we calculated.
 			currentPiece.pieceType = types[RandomNumberGenerator.new().rand_weighted(typeCounter)]
 			
-		#This algorithm will try to 'balance' the board by preffering pieces that are currently less common on the board
-		#Note for balanced: We can't just put in the least occurring piece every time. Then we'd immediately create a match once its 3 or less than the second least occurring piece. (do the logic)
-		'assisting': pass #This algorithm will try to 'assist' the player by creating pieces in such a way that they can be used to make a new match (soon tm)
-		'fighting': pass #This algorithm will try to 'fight' the player by creating pieces that can't be used to create matches in their new spots.
-		#obviously, you'll still be able to make matches with these pieces, just not in your next move.
-		#Note for 'fighting': Guarranteed to never create 'computer cascades' on its own.
-		
+		'assisting': #This algorithm will try to 'assist' the player by creating pieces in such a way that they can be used to make a new match (soon tm)
+			var valid_types = []
+			for t in typeCount:
+				# temporarily "place" this type in the empty slot
+				currentPiece.pieceType = t
+				pieces[x][y] = currentPiece  
+				# check if this placement creates any possible swap that would yield a match
+				if _valid_move_at(x, y):
+					valid_types.append(t)
+			# if there are any pieces left, those will allow matches. pick one of those as the type
+			if !valid_types.is_empty():
+				currentPiece.pieceType = valid_types[randi() % valid_types.size()]
+				# fallback: no types would allow a match, so just pick one at random
+			else: currentPiece.pieceType = randi_range(0,typeCount-1)
+		'fighting':
+			#This algorithm will try to 'fight' the player by creating pieces that can't be used to create matches in their new spots.
+			#obviously, you'll still be able to make matches with these pieces, just not in your next move.
+			#Note for 'fighting': Guarranteed to never create 'computer cascades' on its own, unless it's part of the plan to rid the player of moves.
+			var valid_types = []
+			for t in typeCount:
+				# temporarily "place" this type in the empty slot
+				currentPiece.pieceType = t
+				pieces[x][y] = currentPiece  
+				# check if this placement creates any possible swap that would yield a match
+				if not _valid_move_at(x, y):
+					valid_types.append(t)
+			# if there are any pieces left, those will not allow matches. pick one of those as the type
+			if !valid_types.is_empty():
+				currentPiece.pieceType = valid_types[randi() % valid_types.size()]
+				# fallback: all types would allow a match, so just pick one at random
+			else: currentPiece.pieceType = randi_range(0,typeCount-1)
 		_: currentPiece.pieceType = randi_range(0,typeCount-1) #when in doubt, just make a random piece
 	
 	currentPiece.add_to_group("pieces")
@@ -110,6 +136,8 @@ func _generate_new_piece(x: int, y: int, algorithm = 'random') -> void:
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("debug"):
 		print("debug power go!")
+		print(_find_all_valid_moves())
+		print("")
 
 func _on_piece_input_event(viewport: Node, event: InputEvent, shape_idx: int, piece: Area2D) -> void:
 	#picking up a piece
@@ -331,7 +359,109 @@ func _print_board_state() -> void:
 		continue
 	print("")
 
-#Once finished, this will make all pieces with empty slots directly under them drop one spot.
+#This function checks whether or not there are three or more pieces in a row on the given position.
+#On a normal board state this will always return false, as there should not be any matches then.
+#However this can be used in conjunction with hypothetical board states to check for valid swaps or computer cascades
+func _is_match_at(x: int, y: int) -> bool:
+	var piece = pieces[x][y]
+	if piece == null:
+		return false
+	
+	var type = piece.pieceType
+	
+	# Horizontal scan
+	var count = 1
+	var left = x - 1
+	while left >= 0 and pieces[left][y] and pieces[left][y].pieceType == type:
+		count += 1
+		left -= 1
+	var right = x + 1
+	while right < gridSizeX and pieces[right][y] and pieces[right][y].pieceType == type:
+		count += 1
+		right += 1
+	if count >= 3:
+		return true
+
+# Vertical scan
+	count = 1
+	var up = y - 1
+	while up >= 0 and pieces[x][up] and pieces[x][up].pieceType == type:
+		count += 1
+		up -= 1
+	var down = y + 1
+	while down < gridSizeY and pieces[x][down] and pieces[x][down].pieceType == type:
+		count += 1
+		down += 1
+	if count >= 3:
+		return true
+	
+	return false
+
+#This fucntion goes through all spots on the board, does a fake swap, and then checks if that would cause a match using the match checker function.
+#It returns a list of all valid moves, described as from, to a position. I prefer to count starting at 1, so 1 is added to the coordinate result.
+func _find_all_valid_moves() -> Array:
+	var moves = []
+	for x in gridSizeX:
+		for y in gridSizeY:
+			if pieces[x][y] == null:
+				continue
+			
+			# Only need to check right + down neighbors
+			var neighbors = [[1,0], [0,1]]
+			for offset in neighbors:
+				var nx = x + offset[0]
+				var ny = y + offset[1]
+				if nx >= gridSizeX or ny >= gridSizeY:
+					continue
+				if pieces[nx][ny] == null:
+					continue
+				
+				# Swap temporarily
+				var temp = pieces[x][y]
+				pieces[x][y] = pieces[nx][ny]
+				pieces[nx][ny] = temp
+				
+				# Check if swap creates match
+				if _is_match_at(x, y) or _is_match_at(nx, ny):
+					moves.append({"from": Vector2(x+1,y+1), "to": Vector2(nx+1,ny+1)})
+				
+				# Swap back
+				temp = pieces[x][y]
+				pieces[x][y] = pieces[nx][ny]
+				pieces[nx][ny] = temp
+	
+	if moves.is_empty():
+		moves.append("No valid moves!")
+	return moves
+
+#This function checks to see if there are any valid moves to be made (that are 1 square away) at the given position
+func _valid_move_at(x: int, y: int) -> bool:
+	var neighbors = [[1,0], [-1,0], [0,1], [0,-1]]
+	for offset in neighbors:
+		var nx = x + offset[0]
+		var ny = y + offset[1]
+		if nx < 0 or nx >= gridSizeX or ny < 0 or ny >= gridSizeY:
+			continue
+		if pieces[nx][ny] == null:
+			continue
+		
+		var temp = pieces[x][y]
+		pieces[x][y] = pieces[nx][ny]
+		pieces[nx][ny] = temp
+		
+		if _is_match_at(x, y) or _is_match_at(nx, ny):
+			# swap back before returning!
+			temp = pieces[x][y]
+			pieces[x][y] = pieces[nx][ny]
+			pieces[nx][ny] = temp
+			return true
+		
+		temp = pieces[x][y]
+		pieces[x][y] = pieces[nx][ny]
+		pieces[nx][ny] = temp
+	return false
+
+#This will make all pieces with empty slots directly under them drop one spot.
 func _apply_gravity_to_pieces() -> void:
 	for x in pieces.size():
 		await _apply_gravity_to_column(pieces[x])
