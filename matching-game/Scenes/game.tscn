@@ -1,21 +1,13 @@
-[gd_scene load_steps=4 format=3 uid="uid://c46jq8dalq5o1"]
+[gd_scene load_steps=3 format=3 uid="uid://c46jq8dalq5o1"]
 
 [ext_resource type="PackedScene" uid="uid://ccs32w80jqhd2" path="res://Scenes/Managers/BoardManager.tscn" id="1_dweqb"]
 [ext_resource type="PackedScene" uid="uid://d3ol5htvkag5f" path="res://Scenes/UI.tscn" id="2_ljly0"]
-
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_uh04o"]
 
 [node name="Game" type="Node2D"]
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(8806, 7244)
 zoom = Vector2(0.06, 0.06)
-
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
-position = Vector2(-16, 445)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-shape = SubResource("WorldBoundaryShape2D_uh04o")
 
 [node name="BoardManager" parent="." instance=ExtResource("1_dweqb")]
 

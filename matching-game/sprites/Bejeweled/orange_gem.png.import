@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b5bq8nra3qil6"
-path="res://.godot/imported/Tall-Robo boy.png-533d8829d2854cc9c86a045fa3cd89a5.ctex"
+uid="uid://bffge6n2om2qc"
+path="res://.godot/imported/orange_gem.png-78593d529ff78afc9804969eeb6e6dba.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/Tall-Robo boy.png"
-dest_files=["res://.godot/imported/Tall-Robo boy.png-533d8829d2854cc9c86a045fa3cd89a5.ctex"]
+source_file="res://sprites/Bejeweled/orange_gem.png"
+dest_files=["res://.godot/imported/orange_gem.png-78593d529ff78afc9804969eeb6e6dba.ctex"]
 
 [params]
 

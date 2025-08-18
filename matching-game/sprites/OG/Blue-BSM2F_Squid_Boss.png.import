@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://coq1f6ql26wpw"
-path="res://.godot/imported/000-SpikeFactory.webp-e13b3b9468f43af12a955a36f77dbb6a.ctex"
+uid="uid://djwc117h0o0i3"
+path="res://.godot/imported/Blue-BSM2F_Squid_Boss.png-c6a3213fc524b27e7b40627047ff9c2e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/OG/000-SpikeFactory.webp"
-dest_files=["res://.godot/imported/000-SpikeFactory.webp-e13b3b9468f43af12a955a36f77dbb6a.ctex"]
+source_file="res://sprites/OG/Blue-BSM2F_Squid_Boss.png"
+dest_files=["res://.godot/imported/Blue-BSM2F_Squid_Boss.png-c6a3213fc524b27e7b40627047ff9c2e.ctex"]
 
 [params]
 

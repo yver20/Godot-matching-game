@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c6osu8r0ue72i"
-path="res://.godot/imported/awesome face.jpg-eac9cbbc55a2f799fac6a051a5e03f36.ctex"
+uid="uid://bddhpjv0x35hi"
+path="res://.godot/imported/green_gem.png-93c68e9fb6df9b22c4fbb62ec915ad20.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/OG/awesome face.jpg"
-dest_files=["res://.godot/imported/awesome face.jpg-eac9cbbc55a2f799fac6a051a5e03f36.ctex"]
+source_file="res://sprites/Bejeweled/green_gem.png"
+dest_files=["res://.godot/imported/green_gem.png-93c68e9fb6df9b22c4fbb62ec915ad20.ctex"]
 
 [params]
 

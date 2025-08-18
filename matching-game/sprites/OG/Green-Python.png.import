@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bwamoxwqr6nyv"
-path="res://.godot/imported/Jim.PNG-4266271ec73bea03ba10400fb8ae6676.ctex"
+uid="uid://cirbx4e8kk2fp"
+path="res://.godot/imported/Green-Python.png-743bd66c7aa9346efa84d0c0287d2abe.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/OG/Jim.PNG"
-dest_files=["res://.godot/imported/Jim.PNG-4266271ec73bea03ba10400fb8ae6676.ctex"]
+source_file="res://sprites/OG/Green-Python.png"
+dest_files=["res://.godot/imported/Green-Python.png-743bd66c7aa9346efa84d0c0287d2abe.ctex"]
 
 [params]
 

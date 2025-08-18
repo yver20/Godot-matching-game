@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b8udctduwp5l7"
-path="res://.godot/imported/Robo boy.png-5abfc5808c94088ada890381ad752779.ctex"
+uid="uid://b5bq8nra3qil6"
+path="res://.godot/imported/Tall-Robo boy.png-703d8195df78147e86560f4d19c13835.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/OG/Robo boy.png"
-dest_files=["res://.godot/imported/Robo boy.png-5abfc5808c94088ada890381ad752779.ctex"]
+source_file="res://sprites/OG/Tall-Robo boy.png"
+dest_files=["res://.godot/imported/Tall-Robo boy.png-703d8195df78147e86560f4d19c13835.ctex"]
 
 [params]
 

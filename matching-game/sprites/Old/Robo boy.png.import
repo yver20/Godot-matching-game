@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://1ixxy3ks5sl0"
-path="res://.godot/imported/Stretched-awesome face.png-ea519f7cfbe28c2165f247b611a30912.ctex"
+uid="uid://b8udctduwp5l7"
+path="res://.godot/imported/Robo boy.png-63a75098b8c3a3d7c76a7e575363ce45.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/Stretched-awesome face.png"
-dest_files=["res://.godot/imported/Stretched-awesome face.png-ea519f7cfbe28c2165f247b611a30912.ctex"]
+source_file="res://sprites/Old/Robo boy.png"
+dest_files=["res://.godot/imported/Robo boy.png-63a75098b8c3a3d7c76a7e575363ce45.ctex"]
 
 [params]
 

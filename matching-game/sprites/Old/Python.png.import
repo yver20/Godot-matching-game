@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://batmqwpprju8m"
-path="res://.godot/imported/Big-Loading.png-ea9a30679af0b659f293ee15f0c48517.ctex"
+uid="uid://b34i4q5lj6lom"
+path="res://.godot/imported/Python.png-95c723ae10b48561dd8a436fbc99e94c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/Big-Loading.png"
-dest_files=["res://.godot/imported/Big-Loading.png-ea9a30679af0b659f293ee15f0c48517.ctex"]
+source_file="res://sprites/Old/Python.png"
+dest_files=["res://.godot/imported/Python.png-95c723ae10b48561dd8a436fbc99e94c.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b34i4q5lj6lom"
-path="res://.godot/imported/Python.png-4a9cb8c54788e1492d9a90b7aac90eec.ctex"
+uid="uid://vllv6dhvwhtl"
+path="res://.godot/imported/Long-SpikeFactory.png-c15e54634c6ce01aff6481d55d6e4b0b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/OG/Python.png"
-dest_files=["res://.godot/imported/Python.png-4a9cb8c54788e1492d9a90b7aac90eec.ctex"]
+source_file="res://sprites/OG/Long-SpikeFactory.png"
+dest_files=["res://.godot/imported/Long-SpikeFactory.png-c15e54634c6ce01aff6481d55d6e4b0b.ctex"]
 
 [params]
 

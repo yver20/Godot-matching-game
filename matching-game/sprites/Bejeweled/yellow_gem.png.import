@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://db0wdjegoxsmx"
-path="res://.godot/imported/BSM2F_Squid_Boss.webp-0d4a08c10f77e1a9048204c8f36cfcf7.ctex"
+uid="uid://ditlxtpa428yd"
+path="res://.godot/imported/yellow_gem.png-e41d14a6002e7bcfd503887c04a4d576.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/OG/BSM2F_Squid_Boss.webp"
-dest_files=["res://.godot/imported/BSM2F_Squid_Boss.webp-0d4a08c10f77e1a9048204c8f36cfcf7.ctex"]
+source_file="res://sprites/Bejeweled/yellow_gem.png"
+dest_files=["res://.godot/imported/yellow_gem.png-e41d14a6002e7bcfd503887c04a4d576.ctex"]
 
 [params]
 
