@@ -45,20 +45,49 @@ func _generate_pieces() -> void:
 func _clear_pieces() -> void:
 	for x in pieces.size():
 		for y in pieces[x].size():
-			pieces[x][y].queue_free()
+			if pieces[x][y] != null:
+				pieces[x][y].queue_free()
 
-func _generate_new_piece(x: int, y: int) -> void:
+func _generate_new_piece(x: int, y: int, algorithm = 'random') -> void:
 	#This is basically my current 'refill algorithm'
 	#I'm assuming I will be able to apply other algorithms to one piece at a time as well.
 	var currentPiece = pieceScene.duplicate()
 	add_child(currentPiece)
-	match refillAlgorithm:
+	match algorithm:
 		'random': currentPiece.pieceType = randi_range(0,typeCount-1)
 		'order':
 			currentPiece.pieceType = orderCount
 			orderCount += 1
 			if orderCount == typeCount: orderCount = 0
-		'balanced': pass #This algorithm will try to 'balance' the board by creating pieces that are currently less common on the board
+		'balanced':
+			var typeCounter: Array
+			var types: Array
+			for t in typeCount:
+				typeCounter.append(0)
+				types.append(t)
+			
+			var gridSize: int = gridSizeX * gridSizeY
+			
+			for gridX in pieces.size():
+				for gridY in pieces[gridX].size():
+					# go through each piece, and check the piece type. Increment that array entry.
+					# We're counting how many of each type exist on the board.
+					# In theory, I could also keep track of this as pieces are created. Then, I wouldn't have to go through all pieces. every time I make a new piece.
+					if pieces[gridX][gridY] != null:
+						typeCounter[pieces[gridX][gridY].pieceType] += 1
+			
+			print(typeCounter)
+			print("")
+			#set each types rarity to the reverse rarity in percentage (for example, (1 - (5/25))*100 = 80 AKA the opposite of it's percentage of presence)
+			for t in typeCounter.size():
+				typeCounter[t] = (1 - (float(typeCounter[t]) / float(gridSize))) * 100
+				print("chance of piece: " + str(t) + " = " + str(typeCounter[t]) + "%")
+			
+			
+			#Types is an array containing the index of each type. the RNG randomly picks one with the rarity we calculated.
+			currentPiece.pieceType = types[RandomNumberGenerator.new().rand_weighted(typeCounter)]
+			
+		#This algorithm will try to 'balance' the board by preffering pieces that are currently less common on the board
 		#Note for balanced: We can't just put in the least occurring piece every time. Then we'd immediately create a match once its 3 or less than the second least occurring piece. (do the logic)
 		'assisting': pass #This algorithm will try to 'assist' the player by creating pieces in such a way that they can be used to make a new match (soon tm)
 		'fighting': pass #This algorithm will try to 'fight' the player by creating pieces that can't be used to create matches in their new spots.
@@ -139,13 +168,11 @@ func _on_piece_area_entered(other: Area2D, piece: Area2D) -> void:
 		if other.is_in_group("tiles"):
 			if _are_pieces_in_range(piece, other):
 				piece.savedPosition = other.global_position
-		elif other.is_in_group("pieces") and _are_pieces_in_range(piece, other):
-			if swappingPiece != null:
-				_reset_piece_position(swappingPiece)
-			# Swap positions
-			_move_other_piece(piece, other)
-			print(other.oldPosition)
-			swappingPiece = other
+				if swappingPiece != null:
+					_reset_piece_position(swappingPiece)
+				swappingPiece = pieces[other.gridPos.x][other.gridPos.y]
+				# Swap positions
+				_move_other_piece(piece, swappingPiece)
 
 func _on_piece_area_exited(other: Area2D, piece: Area2D) -> void:
 	if currentlyDraggedPiece == piece:
@@ -330,7 +357,7 @@ func _refill_board() -> void:
 		for y in pieces[x].size():
 			if pieces[x][y] == null:
 				await get_tree().create_timer(0.01/gameSpeed).timeout
-				_generate_new_piece(x,y)
+				_generate_new_piece(x,y, refillAlgorithm)
 
 func _process(delta: float) -> void:
 	if currentlyDraggedPiece != null:

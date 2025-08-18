@@ -21,7 +21,7 @@ shape = SubResource("WorldBoundaryShape2D_uh04o")
 
 [node name="Ui" parent="." instance=ExtResource("2_ljly0")]
 position = Vector2(-6217, -1913)
-scale = Vector2(25.03, 25.03)
+scale = Vector2(20, 20)
 
 [connection signal="newBoard" from="Ui" to="BoardManager" method="_on_ui_new_board"]
 [connection signal="newValue" from="Ui" to="BoardManager" method="_on_ui_new_value"]

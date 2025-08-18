@@ -15,6 +15,7 @@ max_value = 6.0
 value = 6.0
 
 [node name="AmountOfPieces" type="RichTextLabel" parent="PiecesSlider"]
+layout_mode = 0
 offset_left = -26.0
 offset_top = -31.0
 offset_right = 111.0
@@ -31,6 +32,7 @@ max_value = 10.0
 value = 1.0
 
 [node name="AmountOfPieces" type="RichTextLabel" parent="RangeSlider"]
+layout_mode = 0
 offset_left = -26.0
 offset_top = -31.0
 offset_right = 24.0
@@ -112,6 +114,7 @@ step = 0.05
 value = 1.0
 
 [node name="GameSpeed" type="RichTextLabel" parent="GameSpeedSlider"]
+layout_mode = 0
 offset_left = 32.0
 offset_top = -24.0
 offset_right = 135.0
