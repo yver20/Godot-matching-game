@@ -13,6 +13,8 @@ var pieces = [] # This will be board[x][y]
 var currentlyDraggedPiece: Area2D = null
 var swappingPiece: Area2D
 var orderCount: int = 0
+#all algorithms that are not an 'algorithm randomizer'. to be used for said randomizers which are currently 'moodswing' and 'chaos'
+var algorithms: Array = ['random','order','balanced','assisting','fighting']
 
 #This variable is one of the first manipulatable rules for the game. we can increase difficulty by increasing this number.
 var minimumMatchSize = 3
@@ -78,8 +80,8 @@ func _generate_new_piece(x: int, y: int, algorithm = 'random') -> void:
 						typeCounter[pieces[gridX][gridY].pieceType] += 1
 						gridSize += 1
 			
-			print(typeCounter)
-			print(gridSize)
+			#print(typeCounter)
+			#print(gridSize)
 			#set each types rarity to the reverse rarity in percentage (for example, (1 - (5/25))*100 = 80 AKA the opposite of it's percentage of presence)
 			for t in typeCounter.size():
 				typeCounter[t] = (1 - (float(typeCounter[t]) / float(gridSize))) * 100
@@ -88,7 +90,6 @@ func _generate_new_piece(x: int, y: int, algorithm = 'random') -> void:
 			
 			#Types is an array containing the index of each type. the RNG randomly picks one with the rarity we calculated.
 			currentPiece.pieceType = types[RandomNumberGenerator.new().rand_weighted(typeCounter)]
-			
 		'assisting': #This algorithm will try to 'assist' the player by creating pieces in such a way that they can be used to make a new match (soon tm)
 			var valid_types = []
 			for t in typeCount:
@@ -483,11 +484,28 @@ func _apply_gravity_to_column(column: Array) -> void:
 				_update_piece_grid_position(column[y])
 
 func _refill_board() -> void:
-	for x in pieces.size():
-		for y in pieces[x].size():
-			if pieces[x][y] == null:
-				await get_tree().create_timer(0.01/gameSpeed).timeout
-				_generate_new_piece(x,y, refillAlgorithm)
+	var algorithmToBeUsed
+	if refillAlgorithm == 'moodswing':
+		algorithmToBeUsed = algorithms[randi() % algorithms.size()]
+		print("current refill: " + algorithmToBeUsed)
+		for x in pieces.size():
+			for y in pieces[x].size():
+				if pieces[x][y] == null:
+					await get_tree().create_timer(0.01/gameSpeed).timeout
+					_generate_new_piece(x,y, algorithmToBeUsed)
+	elif refillAlgorithm == 'chaos':
+		for x in pieces.size():
+			for y in pieces[x].size():
+				if pieces[x][y] == null:
+					algorithmToBeUsed = algorithms[randi() % algorithms.size()]
+					await get_tree().create_timer(0.01/gameSpeed).timeout
+					_generate_new_piece(x,y, algorithmToBeUsed)
+	else:
+		for x in pieces.size():
+			for y in pieces[x].size():
+				if pieces[x][y] == null:
+					await get_tree().create_timer(0.01/gameSpeed).timeout
+					_generate_new_piece(x,y, algorithmToBeUsed)
 
 func _process(delta: float) -> void:
 	if currentlyDraggedPiece != null:

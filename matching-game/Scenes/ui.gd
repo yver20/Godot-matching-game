@@ -33,6 +33,8 @@ func _on_refill_select_item_selected(index: int) -> void:
 		2: newValue.emit('balanced', 'refill')
 		3: newValue.emit('assisting', 'refill')
 		4: newValue.emit('fighting', 'refill')
+		5: newValue.emit('moodswing', 'refill')
+		6: newValue.emit('chaos', 'refill')
 
 
 func _on_game_speed_slider_value_changed(value: float) -> void:
