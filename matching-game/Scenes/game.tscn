@@ -6,8 +6,9 @@
 [node name="Game" type="Node2D"]
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(8806, 7244)
-zoom = Vector2(0.06, 0.06)
+position = Vector2(-6393, -1393)
+anchor_mode = 0
+zoom = Vector2(0.055, 0.055)
 
 [node name="BoardManager" parent="." instance=ExtResource("1_dweqb")]
 

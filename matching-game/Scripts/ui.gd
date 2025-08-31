@@ -45,3 +45,8 @@ func _on_game_speed_slider_value_changed(value: float) -> void:
 
 func _on_board_manager_score_update(score: int) -> void:
 	scoreText.text = "score %s" % str(score)
+
+
+func _on_quit_button_pressed() -> void:
+	get_tree().quit()
+	pass # Replace with function body.
